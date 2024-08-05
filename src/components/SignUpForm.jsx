@@ -1,5 +1,5 @@
 import  { useState } from 'react';
-import { Link } from 'react-router-dom'; // Import Link from react-router-dom
+import { Link } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import backgroundImage from './p5su.jpeg'; 
 
@@ -126,7 +126,7 @@ const SignUpForm = () => {
           <button type="submit" className="btn btn-primary w-100">Sign Up</button>
         </form>
         <p className="text-center mt-3">
-          Already have an account? <Link to="/signin">Sign in here</Link> {/* Use Link for navigation */}
+          Already have an account? <Link to="/signin">Sign in here</Link>
         </p>
       </div>
     </div>

@@ -1,7 +1,7 @@
 import  { useState } from 'react';
 import { Link } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import backgroundImage from './p5si.webp'; // Assuming the image is in the same directory
+import backgroundImage from './p5si.webp'; 
 
 const SignInForm = () => {
   const [formData, setFormData] = useState({
@@ -26,7 +26,6 @@ const SignInForm = () => {
     e.preventDefault();
     // Call API to sign in the user
     setMessages({ successMessage: 'Sign In successful', errorMessage: '' });
-    // Clear the form
     setFormData({
       email: '',
       password: ''
