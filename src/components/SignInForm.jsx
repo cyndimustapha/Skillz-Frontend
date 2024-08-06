@@ -1,4 +1,4 @@
-import  { useState } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import backgroundImage from './p5si.webp'; 
@@ -24,7 +24,6 @@ const SignInForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Call API to sign in the user
     setMessages({ successMessage: 'Sign In successful', errorMessage: '' });
     setFormData({
       email: '',
@@ -32,53 +31,64 @@ const SignInForm = () => {
     });
   };
 
+  const containerStyle = {
+    display: 'flex',
+    height: '100vh',
+    width: '100vw'
+  };
+
+  const imageSideStyle = {
+    flex: 1,
+    backgroundImage: `url(${backgroundImage})`,
+    backgroundSize: 'cover',
+    backgroundPosition: 'center'
+  };
+
+  const formSideStyle = {
+    flex: 1,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#5c786a'
+  };
+
   return (
-    <div style={{
-      backgroundImage: `url(${backgroundImage})`,
-      backgroundSize: 'cover',
-      backgroundPosition: 'center',
-      position: 'fixed',
-      top: 0,
-      left: 0,
-      height: '100vh',
-      width: '100vw',
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      overflow: 'hidden'
-    }}>
-      <div className="card p-4 shadow" style={{ maxWidth: '400px', width: '100%' }}>
-        <h3 className="text-center mb-4">Sign In</h3>
-        {messages.successMessage && <div className="alert alert-success">{messages.successMessage}</div>}
-        {messages.errorMessage && <div className="alert alert-danger">{messages.errorMessage}</div>}
-        <form onSubmit={handleSubmit}>
-          <div className="mb-3">
-            <input
-              type="email"
-              className="form-control"
-              placeholder="Email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              required
-            />
-          </div>
-          <div className="mb-3">
-            <input
-              type="password"
-              className="form-control"
-              placeholder="Password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              required
-            />
-          </div>
-          <button type="submit" className="btn btn-primary w-100">Sign In</button>
-        </form>
-        <p className="text-center mt-3">
-          Do not have an account? <Link to="/signup">Sign up here</Link>
-        </p>
+    <div style={containerStyle}>
+      <div style={imageSideStyle}></div>
+      <div style={formSideStyle}>
+        <div style={{ width: '100%', padding: '0 20px' }}>
+          <h3 className="text-center mb-4 text-black">Sign In</h3>
+          {messages.successMessage && <div className="alert alert-success">{messages.successMessage}</div>}
+          {messages.errorMessage && <div className="alert alert-danger">{messages.errorMessage}</div>}
+          <form onSubmit={handleSubmit}>
+            <div className="mb-3">
+              <input
+                type="email"
+                className="form-control"
+                placeholder="Email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div className="mb-3">
+              <input
+                type="password"
+                className="form-control"
+                placeholder="Password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <button type="submit" className="btn btn-dark w-100">Sign In</button>
+          </form>
+          <p className="text-center mt-3 text-white">
+            Do not have an account? <Link to="/signup" className="text-black">Sign up here</Link>
+          </p>
+        </div>
       </div>
     </div>
   );
