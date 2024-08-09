@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import './home.css';
 import { Button, Col, Container, Row } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCircleCheck } from '@fortawesome/free-regular-svg-icons';
+import { faCircleCheck, faSquareCheck } from '@fortawesome/free-regular-svg-icons';
 
 const images = [
     {
@@ -97,19 +97,20 @@ function Home() {
                     </Col>
                     <Col xs={6} className="checklist">
                         <div className="checklist-item">
-                            <FontAwesomeIcon icon={faCircleCheck} className="icon" />
+                            <FontAwesomeIcon icon={faSquareCheck} className="icon" />
                             <h3 className="white-text"><i>Sign up</i></h3>
                         </div>
                         <div className="checklist-item">
-                            <FontAwesomeIcon icon={faCircleCheck} className="icon" />
+                            <FontAwesomeIcon icon={faSquareCheck} className="icon" />
                             <h2 className="white-text"><i>Enroll in a course and start learning</i></h2>
                         </div>
                         <div className="checklist-item">
-                            <FontAwesomeIcon icon={faCircleCheck} className="icon" />
+                            <FontAwesomeIcon icon={faSquareCheck} className="icon" />
                             <h2 className="white-text"><i>Accolades to celebrate your accomplishments</i></h2>
                         </div>
                     </Col>
                 </div>
+                
             </Row>
             <Row>
                 <Col xs={3} >
