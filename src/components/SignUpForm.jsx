@@ -64,11 +64,11 @@ const SignUpForm = () => {
     backgroundColor: '#5c786a'
   };
 
-  return (
+  return (  
     <div style={containerStyle}>
       <div style={imageSideStyle}></div>
       <div style={formSideStyle}>
-        <div style={{ width: '100%', padding: '0 20px' }}>
+        <div style={{ width: '60%', padding: '0 20px' }}>
           <h3 className="text-center mb-4 text-black">Sign Up</h3>
           {messages.successMessage && <div className="alert alert-success">{messages.successMessage}</div>}
           {messages.errorMessage && <div className="alert alert-danger">{messages.errorMessage}</div>}
