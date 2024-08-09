@@ -1,0 +1,14 @@
+/* MessagesPage.css */
+.container {
+    display: flex;
+    margin-left: 250px; 
+}
+
+.people-list {
+    width: 200px;
+}
+
+.chat-area {
+    flex: 1;
+    margin-left: 20px;
+}
