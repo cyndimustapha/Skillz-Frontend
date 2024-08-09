@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './home.css';
 import { Button, Col, Container, Row } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -24,6 +24,35 @@ const images = [
 ];
 
 function Home() {
+  const [activeIndex, setActiveIndex] = useState(null);
+
+  const toggleFAQ = (index) => {
+    setActiveIndex(activeIndex === index ? null : index);
+  };
+
+  const faqs = [
+    {
+      question: "What is Skillz?",
+      answer: "Skillz is an online learning platform that offers thousands of creative classes taught by experts in various fields."
+    },
+    {
+      question: "How do I enroll in a course?",
+      answer: "You can enroll in a course by signing up for an account, browsing through the available courses, and clicking 'Enroll' on the course of your choice."
+    },
+    {
+      question: "Can I access courses offline?",
+      answer: "Yes, you can download courses to access them offline through our mobile app."
+    },
+    {
+      question: "Do I get a certificate after completing a course?",
+      answer: "Yes, you will receive an accolade of completion for each course you successfully finish."
+    },
+    {
+      question: "What if I have technical issues or need support?",
+      answer: "We offer 24/7 support through our help center. You can reach out to us anytime for assistance."
+    }
+  ];
+
   return (
     <div>
         <Container className='navbarDiv'>
@@ -32,28 +61,27 @@ function Home() {
                     <h2><b>LOGO</b></h2>
                 </Col>
                 <Col>
-                    <Button style={{backgroundColor: '#183D3D'}}>Login</Button>
-                    <Button style={{backgroundColor: '#FFFFFF', color: 'black', border: '1px solid white'}}>Sign up</Button>
+                    <Button className="login-btn">Login</Button>
+                    <Button className="signup-btn">Sign up</Button>
                 </Col>
-                <Col>
-                </Col>
+                <Col></Col>
             </Row>
         </Container>
         <Container>
             <Row>
-                <Col style={{paddingLeft: '200px', paddingTop: '40px'}}>
-                    <div style={{width: '300px' }}>
+                <Col className="header-col">
+                    <div className="header-content">
                         <h2><b>Become a Pro with thousands of creative classes</b></h2>
-                        <Button style={{backgroundColor: '#014E10'}}>Get Started</Button>
+                        <Button className="get-started-btn">Get Started</Button>
                     </div>
                 </Col>
             </Row>
         </Container>
-        <Container style={{paddingTop:'40px'}}>
+        <Container className="image-container">
             <Row>
                 {images.map((obj, index) => (
                     <Col key={index} xs={3} >
-                        <img src={obj.image} alt='showcase' style={{width:'330px', height:'500px', objectFit:'cover'}} />
+                        <img src={obj.image} alt='showcase' className="showcase-img" />
                         <h2 className='names'><i>{obj.name}</i></h2>
                     </Col>  
                 ))}
@@ -62,28 +90,102 @@ function Home() {
         <Container>
             <Row>
                 <div className='desc'>
-                <Col xs={6}>
-                    <div style={{color: 'white', paddingTop: '170px', paddingLeft: '200px' }}>
-                        <h1> Creative Learning at your convenience</h1>
-                    </div>
-                </Col>
-                <Col style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-                    <div style={{ marginBottom: '20px', textAlign: 'center' }}>
-                        <FontAwesomeIcon icon={faCircleCheck} style={{ height: '40px', backgroundColor: '#5C8374', borderRadius: '100%', marginBottom: '10px' }} />
-                        <h3>Sign up</h3>
-                    </div>
-                    <div style={{ marginBottom: '20px', textAlign: 'center' }}>
-                        <FontAwesomeIcon icon={faCircleCheck} style={{ height: '40px', backgroundColor: '#5C8374', borderRadius: '50%', marginBottom: '10px' }} />
-                        <p>Enroll in a course and start learning</p>
-                    </div>
-                    <div style={{ textAlign: 'center' }}>
-                        <FontAwesomeIcon icon={faCircleCheck} style={{ height: '40px', backgroundColor: '#5C8374', borderRadius: '50%', marginBottom: '10px' }} />
-                        <p>Accolades to celebrate your accomplishments</p>
-                    </div>
-                </Col>
+                    <Col xs={6}>
+                        <div className="creative-learning">
+                            <h1> Creative Learning at your convenience</h1>
+                        </div>
+                    </Col>
+                    <Col xs={6} className="checklist">
+                        <div className="checklist-item">
+                            <FontAwesomeIcon icon={faCircleCheck} className="icon" />
+                            <h3 className="white-text"><i>Sign up</i></h3>
+                        </div>
+                        <div className="checklist-item">
+                            <FontAwesomeIcon icon={faCircleCheck} className="icon" />
+                            <h2 className="white-text"><i>Enroll in a course and start learning</i></h2>
+                        </div>
+                        <div className="checklist-item">
+                            <FontAwesomeIcon icon={faCircleCheck} className="icon" />
+                            <h2 className="white-text"><i>Accolades to celebrate your accomplishments</i></h2>
+                        </div>
+                    </Col>
                 </div>
             </Row>
+            <Row>
+                <Col xs={3} >
+                    <div className="info-box" style={{marginLeft:'30px'}}>1K+ COURSES</div>
+                </Col>
+                <Col xs={3} >
+                    <div className="info-box">1K+ LEARNERS</div>
+                </Col>
+                <Col xs={3}>
+                    <div className="info-box">1K+ INSTRUCTORS</div>
+                </Col>
+                <Col xs={3}>
+                    <div className="info-box"> 4.5   ★★★★☆<br/>APP STORE RATING</div>
+                </Col>
+            </Row>
         </Container>
+        <Container style={{ height: '900px', transform: 'translateY(-100px)' }}>
+            <h1>Why Skillz?</h1>
+            <Row>
+                <Col xs={6} style={{ width: '480px', paddingTop: '40px', textAlign: 'center', paddingLeft: '80px' }}>
+                    <h2>
+                        “This platform has transformed
+                        the way I learn new skills!
+                        The courses are practical and 
+                        engaging.“
+                    </h2><br/>
+                    <h2><b>~Billy Butcher</b></h2>
+                </Col>
+            </Row>
+            <Row>
+                <Col xs={6} style={{ width: '1200px', paddingTop: '40px', textAlign: 'center', paddingLeft: '780px' }}>
+                    <h2 style={{ fontWeight: "lighter" }}>
+                        "This app makes it so easy to learn
+                        at my own pace and the
+                        instructors are top-notch!"
+                    </h2><br/>
+                    <h2>~Joel Ochieng</h2>
+                </Col>
+            </Row>
+            <Row>
+                <Col xs={6} style={{ width: '480px', paddingTop: '40px', textAlign: 'center', paddingLeft: '80px' }}>
+                    <h2>
+                        "The photography courses on this
+                        app are amazing!! I've learned new 
+                        techniques that have taken my 
+                        work to the next level."
+                    </h2><br/>
+                    <h2>
+                        ~Louis du Lac
+                    </h2>
+                </Col>
+            </Row>
+        </Container>
+        <Container style={{ height: '550px', backgroundColor: '#183D3D', color: 'white', textAlign: 'center',  borderTopLeftRadius:'20px', borderTopRightRadius:'20px'}}>
+            <div style={{ paddingTop: '50px', fontSize: 'large' }}>
+                <h2>Frequently Asked Questions (FAQs)</h2>
+            </div>
+            
+            <Row>
+                <Col style={{paddingLeft:'220px'}}>
+                    {faqs.map((faq, index) => (
+                        <div key={index} style={{ margin: '20px 0', cursor: 'pointer' , borderBottom: '1px solid white', width:"900px", paddingBottom:'20px' }} onClick={() => toggleFAQ(index)}>
+                            <h4>{faq.question}</h4>
+                            {activeIndex === index && (
+                                <p style={{ marginTop: '10px', fontSize: 'medium' }}>
+                                   <i>{faq.answer}</i> 
+                                </p>
+                            )}
+                        </div>
+                    ))}
+                </Col>
+            </Row>
+        </Container>
+        <div style={{backgroundColor:'black', height:'300px'}} >
+
+        </div>
     </div>
   );
 }
