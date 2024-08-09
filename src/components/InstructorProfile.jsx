@@ -119,7 +119,7 @@ const InstructorProfile = () => {
         <div style={styles.profilePicContainer}>
           <img
             style={styles.profilePic}
-            src="profile-pic-url" // Replace with actual image URL
+            src="profile-pic-url" 
             alt="Instructor"
           />
         </div>
@@ -131,7 +131,7 @@ const InstructorProfile = () => {
         </div>
         <div style={styles.editIconContainer}>
           <button style={styles.editIcon}>
-            <svg /* SVG for edit icon */ />
+            <svg/>
           </button>
         </div>
       </section>
@@ -143,7 +143,7 @@ const InstructorProfile = () => {
             <div key={index} style={styles.courseCard}>
               <img
                 style={styles.courseImage}
-                src={`course-image-url-${index}`} // Replace with actual image URL
+                src={`course-image-url-${index}`}
                 alt="Course"
               />
               <div style={styles.courseDetails}>
