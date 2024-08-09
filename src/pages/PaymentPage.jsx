@@ -1,5 +1,7 @@
 import { useState } from "react";
-import { useSendSTKPush } from "../../hooks/useSendSTKPush";
+import axios from "axios";
+import MpesaPaymentForm from "../components/MpesaPaymentForm";
+import CreditCardPaymentForm from "../components/CreditCardPaymentForm";
 
 const paymentMethods = [
   {
@@ -14,21 +16,31 @@ const paymentMethods = [
 
 const PaymentPage = () => {
   const [paymentMethod, setPaymentMethod] = useState(null);
-
-  // Hook for sending STK Push
-  const { loading, sendSTKPush } = useSendSTKPush();
-
-  // States for MPESA
-  const [phoneNumber, setPhoneNumber] = useState("");
+  const [loading, setLoading] = useState(false);
 
   // Submit phone for STK push
-  const handlePhoneSubmit = () => {
-    sendSTKPush(phoneNumber);
+  const handlePhoneSubmit = async () => {
+    try {
+      setLoading(true);
+      await axios.post("http://localhost:8000/sendSTKPush");
+    } catch (error) {
+      console.log("Error: ", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Submit card details
+  const handleCardSubmit = async () => {
+    console.log("Submitting card details");
   };
 
   return (
-    <div className="w-screen h-screen flex p-10 flex-col md:flex-row">
-      <div className="flex-1 h-full  md:border-r border-b md:border-b-0 p-4">
+    <div
+      className="w-screen h-screen flex p-10 flex-col md:flex-row"
+      style={{ backgroundColor: "#5C8374" }}
+    >
+      <div className="flex-1 h-full md:border-r border-b md:border-b-0 p-4">
         <h1 className="text-4xl font-bold">
           Select your payment method to continue
         </h1>
@@ -57,26 +69,13 @@ const PaymentPage = () => {
           <p className="text-slate-400">No payment method selected</p>
         )}
         {paymentMethod === 2 && (
-          <div className="flex flex-col space-y-4">
-            <input
-              type="text"
-              value={phoneNumber}
-              onChange={(e) => setPhoneNumber(e.target.value)}
-              className="border border-slate-400 rounded-md p-4 w-11/12 max-w-xs focus:outline-none"
-              placeholder="07123..."
-            />
-            <button
-              onClick={handlePhoneSubmit}
-              disabled={phoneNumber.length < 10 || loading}
-              className={`${
-                phoneNumber.length < 10 || loading
-                  ? "bg-blue-300"
-                  : "bg-blue-500"
-              } p-4 rounded-md text-white`}
-            >
-              {loading ? "Loading..." : "Submit"}
-            </button>
-          </div>
+          <MpesaPaymentForm
+            loading={loading}
+            handlePhoneSubmit={handlePhoneSubmit}
+          />
+        )}
+        {paymentMethod === 1 && (
+          <CreditCardPaymentForm handleCardSubmit={handleCardSubmit} />
         )}
       </div>
     </div>
