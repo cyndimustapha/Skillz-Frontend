@@ -28,7 +28,7 @@ const Sidebar = () => {
                     </Link>
                 </li>
                 <li>
-                    <Link to="/MessagesPage">
+                    <Link to="/messages">
                         <FaEnvelope className="icon" /> Chats
                     </Link>
                 </li>
@@ -55,7 +55,7 @@ const Sidebar = () => {
                             // Handle logout logic
                             localStorage.removeItem('token');
                             localStorage.removeItem('user');
-                            window.location.href = '/login'; // Redirect to login page
+                            window.location.href = '/signin'; // Redirect to login page
                         }}>
                             <FaSignOutAlt className="icon" /> Logout
                         </button>
