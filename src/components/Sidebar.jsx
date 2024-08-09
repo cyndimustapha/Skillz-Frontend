@@ -1,11 +1,11 @@
 /* eslint-disable no-unused-vars */
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { FaBars, FaHome,FaTachometerAlt, FaEnvelope, FaBell, FaSearch, FaCog, FaSignOutAlt } from 'react-icons/fa';
+import { FaBars, FaHome, FaEnvelope, FaBell, FaSearch, FaCog, FaSignOutAlt } from 'react-icons/fa';
 import './Sidebar.css';
 
 const Sidebar = () => {
-    const [isOpen, setIsOpen] = useState(true); // Change default to true for testing
+    const [isOpen, setIsOpen] = useState(true);
 
     const toggleSidebar = () => {
         setIsOpen(!isOpen);
@@ -24,7 +24,7 @@ const Sidebar = () => {
                 </li>
                 <li>
                     <Link to="/LearnersDashboard">
-                        <FaTachometerAlt className="icon" /> Dashboard
+                        <FaCog className="icon" /> Dashboard
                     </Link>
                 </li>
                 <li>

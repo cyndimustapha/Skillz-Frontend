@@ -154,7 +154,7 @@ const MessagesPage = () => {
               </div>
             </>
           ) : (
-            <div className="chat-header">Select a person to chat with</div>
+            <div className="chat-header">Chats</div>
           )}
         </div>
       </div>
