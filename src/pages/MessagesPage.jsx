@@ -1,70 +1,66 @@
 /* eslint-disable no-unused-vars */
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useState, useRef } from "react";
+import io from "socket.io-client";
+import { useNavigate } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
-import { useMessages } from '../components/MessagesContext';
-import './MessagesPage.css';
+import { useMessages } from "../components/MessagesContext";
+
+const socket = io("http://127.0.0.1:5000");
 
 const MessagesPage = () => {
-  const {
-    people,
-    setPeople,
-    selectedPerson,
-    setSelectedPerson,
-    newMessage,
-    setNewMessage,
-    messages,
-    setMessages,
-  } = useMessages();
+  const { messages, setMessages, people, setPeople, selectedPerson, setSelectedPerson, newMessage, setNewMessage } = useMessages();
+  const [username, setUsername] = useState('');
+  const [message, setMessage] = useState('');
+  const navigate = useNavigate();
   const chatMessagesRef = useRef(null);
-  const currentUser = JSON.parse(localStorage.getItem("user"));
 
   useEffect(() => {
-    const fetchMessages = async () => {
-      try {
-        const response = await fetch("http://127.0.0.1:5000/api/messages", {
-          method: 'GET',
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`,
-            "Content-Type": "application/json",
-          },
-        });
-        if (response.ok) {
-          const data = await response.json();
-          setMessages(data);
-        } else {
-          console.error('Failed to fetch messages');
-        }
-      } catch (error) {
-        console.error('Error:', error);
+    // Retrieve and set conversations
+    fetch('http://127.0.0.1:5000/users/conversations', {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('token')}`, // Adjust this to match how you store your token
       }
+    })
+      .then(response => response.json())
+      .then(data => {
+        setPeople(data);
+      })
+      .catch(error => {
+        console.error('Error fetching people:', error);
+      });
+
+    // Set up socket.io connections
+    socket.on("connect", () => {
+      console.log("Connected to the server");
+    });
+
+    socket.on("disconnect", () => {
+      console.log("Disconnected from the server");
+    });
+
+    socket.on("message", (data) => {
+      setMessages((prevMessages) => [...prevMessages, data]);
+    });
+
+    return () => {
+      socket.disconnect();
     };
+  }, []);
 
-    fetchMessages();
-  }, [setMessages]);
+  const sendMessage = () => {
+    if (username && message && selectedPerson) {
+      const fullMessage = { content: message, sender: username, receiver: selectedPerson.id };
+      socket.emit('message', fullMessage);
+      setMessages((prevMessages) => [...prevMessages, fullMessage]);
+      setMessage('');
+    } else {
+      alert("Please enter both username and message.");
+    }
+  };
 
-  useEffect(() => {
-    const fetchPeople = async () => {
-      try {
-        const response = await fetch("http://127.0.0.1:5000/users", {
-          method: 'GET',
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`,
-            "Content-Type": "application/json",
-          },
-        });
-        if (response.ok) {
-          const data = await response.json();
-          setPeople(data);
-        } else {
-          console.error('Failed to fetch people');
-        }
-      } catch (error) {
-        console.error('Error:', error);
-      }
-    };
-
-    fetchPeople();
-  }, [setPeople]);
+  const handleBackClick = () => {
+    navigate(-1); // Go back one step in history
+  };
 
   useEffect(() => {
     if (chatMessagesRef.current) {
@@ -72,90 +68,67 @@ const MessagesPage = () => {
     }
   }, [messages]);
 
-  const handleSendMessage = async (e) => {
-    e.preventDefault();
-    if (newMessage.trim() && selectedPerson) {
-      const token = localStorage.getItem("token");
-      const MESSAGES_API = "http://127.0.0.1:5000/messages";
-      const response = await fetch(MESSAGES_API, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          user_id: selectedPerson.id,
-          message: newMessage,
-        }),
-      });
-      setNewMessage("");
-      if (response.ok) {
-        alert("Message sent successfully!");
-        const updatedMessages = await response.json();
-        setMessages(updatedMessages);
-      } else {
-        alert("Failed to send message.");
-      }
-    }
-  };
-
   return (
     <>
       <Sidebar />
-      <div className="container">
-        <div className="people-list">
-          {people.map((person) => (
-            <div
-              key={person.id}
-              className="person"
-              onClick={() => setSelectedPerson(person)}
+      <div className="container-fluid">
+        <div className="row">
+          <div className="col-md-3 border-right">
+            <button
+              onClick={handleBackClick}
+              className="btn btn-primary mb-3"
             >
-              {person.username}
+              Back
+            </button>
+            <div className="list-group">
+              {people.map((person) => (
+                <button
+                  key={person.id}
+                  className={`list-group-item list-group-item-action ${selectedPerson && selectedPerson.id === person.id ? 'active' : ''}`}
+                  onClick={() => setSelectedPerson(person)}
+                >
+                  {person.username}
+                </button>
+              ))}
             </div>
-          ))}
-        </div>
-        <div className="chat-area">
-          {selectedPerson ? (
-            <>
-              <div className="chat-header">
-                Chat with {selectedPerson.username}
-              </div>
-              <div className="chat-messages" ref={chatMessagesRef}>
-                {messages
-                  .filter(
-                    (msg) =>
-                      (msg.sender.email === currentUser.email &&
-                        msg.recipient.email === selectedPerson.email) ||
-                      (msg.sender.email === selectedPerson.email &&
-                        msg.recipient.email === currentUser.email)
-                  )
-                  .map((msg, index) => (
-                    <div
-                      key={index}
-                      className={`message ${
-                        msg.sender.email === currentUser.email
-                          ? "sent"
-                          : "received"
-                      }`}
-                    >
-                      <span className="text">{msg.message}</span>
-                      <p className="message-time">{msg.time}</p>
+          </div>
+          <div className="col-md-9">
+            {selectedPerson ? (
+              <>
+                <div className="bg-primary text-white p-3 mb-3 rounded">
+                  Chat with {selectedPerson.username}
+                </div>
+                <div className="chat-messages bg-light p-3 rounded mb-3" ref={chatMessagesRef} style={{ height: '400px', overflowY: 'scroll' }}>
+                  {messages.filter(msg => msg.receiver_id === selectedPerson.id || msg.sender_id === selectedPerson.id).map((msg, index) => (
+                    <div key={index} className="mb-2">
+                      <span className={`d-block p-2 rounded ${msg.sender_id === username ? 'bg-primary text-white' : 'bg-secondary text-white'}`}>
+                        {msg.content}
+                      </span>
                     </div>
                   ))}
+                </div>
+                <div className="input-group">
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Type a message"
+                    value={message}
+                    onChange={(e) => setMessage(e.target.value)}
+                  />
+                  <button
+                    onClick={sendMessage}
+                    className="btn btn-primary"
+                  >
+                    Send
+                  </button>
+                </div>
+              </>
+            ) : (
+              <div className="bg-primary text-white p-3 rounded">
+                Select a chat to start messaging
               </div>
-              <div className="chat-form">
-                <input
-                  type="text"
-                  value={newMessage}
-                  onChange={(e) => setNewMessage(e.target.value)}
-                  placeholder="Type a message"
-                />
-                <button onClick={handleSendMessage}>Send</button>
-              </div>
-            </>
-          ) : (
-            <div className="chat-header">Chats</div>
-          )}
+            )}
+          </div>
         </div>
       </div>
     </>
