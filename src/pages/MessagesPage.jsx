@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
 import { useMessages } from "../components/MessagesContext";
 
-const socket = io("http://127.0.0.1:5000");
+const socket = io("http://localhost:5173");
 
 const MessagesPage = () => {
   const { messages, setMessages, people, setPeople, selectedPerson, setSelectedPerson, newMessage, setNewMessage } = useMessages();
@@ -18,7 +18,7 @@ const MessagesPage = () => {
     // Retrieve and set conversations
     fetch('http://127.0.0.1:5000/users/conversations', {
       headers: {
-        'Authorization': `Bearer ${localStorage.getItem('token')}`, // Adjust this to match how you store your token
+        'Authorization': `Bearer ${localStorage.getItem('token')}`,
       }
     })
       .then(response => response.json())

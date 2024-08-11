@@ -12,34 +12,39 @@ const Sidebar = () => {
     };
 
     return (
-        <div className={`sidebar ${isOpen ? 'open' : ''}`}>
+        <div className={`sidebar ${isOpen ? 'open' : 'closed'}`}>
             <div className="sidebar-header">
                 <FaBars onClick={toggleSidebar} />
             </div>
             <ul className="sidebar-menu">
                 <li>
                     <Link to="/Home">
-                        <FaHome className="icon" /> Home
+                        <FaHome className="icon" /> 
+                        {isOpen && <span>Home</span>}
                     </Link>
                 </li>
                 <li>
                     <Link to="/LearnersDashboard">
-                        <FaCog className="icon" /> Dashboard
+                        <FaCog className="icon" /> 
+                        {isOpen && <span>Dashboard</span>}
                     </Link>
                 </li>
                 <li>
                     <Link to="/messages">
-                        <FaEnvelope className="icon" /> Chats
+                        <FaEnvelope className="icon" /> 
+                        {isOpen && <span>Chats</span>}
                     </Link>
                 </li>
                 <li>
                     <Link to="/Notifications">
-                        <FaBell className="icon" /> Notifications
+                        <FaBell className="icon" /> 
+                        {isOpen && <span>Notifications</span>}
                     </Link>
                 </li>
                 <li>
                     <Link to="/Browser">
-                        <FaSearch className="icon" /> Browse
+                        <FaSearch className="icon" /> 
+                        {isOpen && <span>Browse</span>}
                     </Link>
                 </li>
             </ul>
@@ -47,17 +52,18 @@ const Sidebar = () => {
                 <ul className="sidebar-menu">
                     <li>
                         <Link to="/Settings">
-                            <FaCog className="icon" /> Settings
+                            <FaCog className="icon" /> 
+                            {isOpen && <span>Settings</span>}
                         </Link>
                     </li>
                     <li>
                         <button className="logout-button" onClick={() => {
-                            // Handle logout logic
                             localStorage.removeItem('token');
                             localStorage.removeItem('user');
                             window.location.href = '/signin'; // Redirect to login page
                         }}>
-                            <FaSignOutAlt className="icon" /> Logout
+                            <FaSignOutAlt className="icon" /> 
+                            {isOpen && <span>Logout</span>}
                         </button>
                     </li>
                 </ul>

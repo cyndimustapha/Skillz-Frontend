@@ -1,7 +1,10 @@
-/* MessagesPage.css */
-.container {
-    display: flex;
-    margin-left: 250px; 
+.container-fluid {
+    margin-left: 250px; /* Shift content right to make space for sidebar */
+    transition: margin-left 0.3s ease; /* Smooth transition for sidebar toggle */
+}
+
+.sidebar.closed ~ .container-fluid {
+    margin-left: 0; /* Adjust when sidebar is closed */
 }
 
 .people-list {
