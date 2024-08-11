@@ -1,17 +1,15 @@
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Sidebar from './components/Sidebar';
 import SignUpForm from './components/SignUpForm';
 import SignInForm from './components/SignInForm';
 import LearnersDashboard from './pages/LearnersDashboard';
 import MessagesPage from './pages/MessagesPage';
-import { MessagesProvider } from './components/MessagesContext'; // Import the MessagesProvider
+import { MessagesProvider } from './components/MessagesContext'; 
 
 const App = () => {
   return (
     <Router>
-      <MessagesProvider> {/* Wrap your routes with MessagesProvider */}
+      <MessagesProvider> 
         <div className="App">
-          <Sidebar />
           <div className="content">
             <Routes>
               <Route path="/" element={<SignUpForm />} />
