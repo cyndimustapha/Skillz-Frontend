@@ -24,7 +24,7 @@ const Sidebar = () => {
                     </Link>
                 </li>
                 <li>
-                    <Link to="/LearnersDashboard">
+                    <Link to="/Dashboard">
                         <FaCog className="icon" /> 
                         {isOpen && <span>Dashboard</span>}
                     </Link>
