@@ -1,4 +1,4 @@
-/* eslint-disable no-unused-vars */
+
 import React, { useState } from 'react';
 import './home.css';
 import { Button, Col, Container, Row } from 'react-bootstrap';
