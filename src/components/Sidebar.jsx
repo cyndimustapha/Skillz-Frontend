@@ -17,7 +17,7 @@ const Sidebar = () => {
             </div>
             <ul className="flex-1 list-none p-0 m-0">
                 <li className="p-4 flex items-center hover:bg-[#183d3d] rounded-md">
-                    <Link to="/Home" className="flex items-center text-white text-base no-underline">
+                    <Link to="/" className="flex items-center text-white text-base no-underline">
                         <FaHome className={`text-2xl ${isOpen ? '' : 'bg-[#040d12]'}`} />
                         {isOpen && <span className="ml-2">Home</span>}
                     </Link>
