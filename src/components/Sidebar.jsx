@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { FaBars, FaHome, FaEnvelope, FaBell, FaSearch, FaCog, FaSignOutAlt } from 'react-icons/fa';
+import { FaBars, FaHome, FaEnvelope, FaBell, FaSearch, FaCog, FaSignOutAlt, FaTachometerAlt  } from 'react-icons/fa';
 
 const Sidebar = () => {
     const [isOpen, setIsOpen] = useState(true);
@@ -24,7 +24,7 @@ const Sidebar = () => {
                 </li>
                 <li className="p-4 flex items-center hover:bg-[#183d3d] rounded-md">
                     <Link to="/Dashboard" className="flex items-center text-white text-base no-underline">
-                        <FaCog className={`text-2xl ${isOpen ? '' : 'bg-[#040d12]'}`} />
+                        <FaTachometerAlt  className={`text-2xl ${isOpen ? '' : 'bg-[#040d12]'}`} />
                         {isOpen && <span className="ml-2">Dashboard</span>}
                     </Link>
                 </li>
