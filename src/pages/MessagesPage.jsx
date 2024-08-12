@@ -22,6 +22,7 @@ const MessagesPage = () => {
     })
       .then(response => response.json())
       .then(data => {
+        console.log('Fetched conversations:', data);
         setPeople(data);
       })
       .catch(error => {
@@ -43,7 +44,7 @@ const MessagesPage = () => {
     return () => {
       socket.disconnect();
     };
-  }, []);
+  }, [setPeople, setMessages]);
 
   const handleBackClick = () => {
     navigate(-1);
@@ -73,22 +74,47 @@ const MessagesPage = () => {
   return (
     <div className="flex h-screen">
       <Sidebar isOpen={isSidebarOpen} toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} />
-      <div className={`flex-1 transition-all duration-300 ${isSidebarOpen ? 'ml-64' : 'ml-16'}`}>
-        <div className="flex flex-col h-full">
-          <div className="bg-[#183d3d] text-white p-3 rounded-t-lg">
+      <div className={`flex-1 transition-all duration-300 ${isSidebarOpen ? 'ml-64' : 'ml-16'} flex`}>
+        {/* Conversations List */}
+        <div className="w-64 bg-gray-100 border-r border-gray-300">
+          <div className="p-4 bg-[#183d3d] text-white">
+            Conversations
+          </div>
+          <div className="p-2 overflow-y-auto h-[calc(100vh-4rem)]">
+            {people.map(person => (
+              <div
+                key={person.id}
+                className={`p-2 cursor-pointer hover:bg-gray-200 ${selectedPerson?.id === person.id ? 'bg-gray-300' : ''}`}
+                onClick={() => setSelectedPerson(person)}
+              >
+                {person.first_name} {person.last_name}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Chat Area */}
+        <div className="flex-1 flex flex-col">
+          <div className="bg-[#183d3d] text-white p-3">
             {selectedPerson ? (
               `${selectedPerson.first_name} ${selectedPerson.last_name}`
             ) : (
-              "Chats"
+              "Select a conversation"
             )}
           </div>
           <div className="flex-1 bg-gray-100 p-4 overflow-auto">
-            <div ref={chatMessagesRef} className="flex flex-col-reverse space-y-4">
-              {messages.filter(msg => msg.receiver_id === selectedPerson?.id || msg.sender_id === selectedPerson?.id).map((msg, index) => (
-                <div key={index} className={`p-2 rounded-lg ${msg.sender_id === selectedPerson?.id ? 'bg-[#183d3d] text-white self-end' : 'bg-gray-300 text-black self-start'}`}>
-                  {msg.content}
-                </div>
-              ))}
+            <div ref={chatMessagesRef} className="flex flex-col space-y-4">
+              {selectedPerson ? (
+                messages
+                  .filter(msg => msg.receiver_id === selectedPerson.id || msg.sender_id === selectedPerson.id)
+                  .map((msg, index) => (
+                    <div key={index} className={`p-2 rounded-lg ${msg.sender_id === 1 ? 'bg-[#183d3d] text-white self-end' : 'bg-gray-300 text-black self-start'}`}>
+                      {msg.content}
+                    </div>
+                  ))
+              ) : (
+                <div>Select a person to start chatting</div>
+              )}
             </div>
           </div>
           <div className="p-4 bg-white border-t border-gray-300">
