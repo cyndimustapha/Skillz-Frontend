@@ -9,21 +9,22 @@ import PaymentPage from './pages/PaymentPage';
 
 const App = () => {
   return (
-    <Router>
-      <MessagesProvider> 
-        <div className="App">
+    <MessagesProvider> 
+      <div className="App">
+        <Router>
           <div className="content">
             <Routes>
-              <Route path="/" element={<SignUpForm />} />
+              <Route path="/" element={<Home />} />
               <Route path="/signin" element={<SignInForm />} />
+              <Route path="/signup" element={<SignUpForm />} />
               <Route path="/dashboard" element={<LearnersDashboard />} />
               <Route path="/messages" element={<MessagesPage />} />
               <Route path="/payment" element={<PaymentPage />} /> 
             </Routes>
           </div>
-        </div>
-      </MessagesProvider>
-     
+        </Router>
+      </div>
+    </MessagesProvider>
   );
 };
 
