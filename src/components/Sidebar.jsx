@@ -60,7 +60,7 @@ const Sidebar = () => {
                         <button className="logout-button" onClick={() => {
                             localStorage.removeItem('token');
                             localStorage.removeItem('user');
-                            window.location.href = '/signin'; // Redirect to login page
+                            window.location.href = '/signin'; 
                         }}>
                             <FaSignOutAlt className="icon" /> 
                             {isOpen && <span>Logout</span>}
