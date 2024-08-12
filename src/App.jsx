@@ -6,6 +6,7 @@ import MessagesPage from './pages/MessagesPage';
 import { MessagesProvider } from './components/MessagesContext'; 
 import Home from './pages/Home';
 import PaymentPage from './pages/PaymentPage';
+import './index.css';
 
 const App = () => {
   return (
