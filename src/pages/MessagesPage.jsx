@@ -4,19 +4,17 @@ import io from "socket.io-client";
 import { useNavigate } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
 import { useMessages } from "../components/MessagesContext";
-import './MessagesPage.css';  // Custom CSS file
 
 const socket = io("http://localhost:5173");
 
 const MessagesPage = () => {
   const { messages, setMessages, people, setPeople, selectedPerson, setSelectedPerson } = useMessages();
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-  const [message, setMessage] = useState(''); // Declare the message state
+  const [message, setMessage] = useState('');
   const navigate = useNavigate();
   const chatMessagesRef = useRef(null);
 
   useEffect(() => {
-    // Retrieve and set conversations
     fetch('http://127.0.0.1:5000/users/conversations', {
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('token')}`,
@@ -30,7 +28,6 @@ const MessagesPage = () => {
         console.error('Error fetching people:', error);
       });
 
-    // Set up socket.io connections
     socket.on("connect", () => {
       console.log("Connected to the server");
     });
@@ -49,21 +46,21 @@ const MessagesPage = () => {
   }, []);
 
   const handleBackClick = () => {
-    navigate(-1); // Go back one step in history
+    navigate(-1);
   };
 
   const sendMessage = () => {
     if (message.trim() && selectedPerson) {
       const newMessage = {
         content: message,
-        sender_id: 1, // Replace with the actual sender ID
+        sender_id: 1,
         receiver_id: selectedPerson.id,
         timestamp: new Date(),
       };
       
       socket.emit("sendMessage", newMessage);
       setMessages((prevMessages) => [...prevMessages, newMessage]);
-      setMessage(''); // Clear the input field
+      setMessage('');
     }
   };
 
@@ -74,71 +71,46 @@ const MessagesPage = () => {
   }, [messages]);
 
   return (
-    <>
-      <div className="d-flex">
-        <Sidebar isOpen={isSidebarOpen} toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} />
-        <div className={`content-container ${isSidebarOpen ? 'with-sidebar' : 'without-sidebar'}`}>
-          <div className="row">
-            <div className="col-md-3 border-right">
-              <button
-                onClick={handleBackClick}
-                className="btn btn-success mb-3"
-              >
-                Back
-              </button>
-              <div className="list-group">
-                {people.map((person) => (
-                  <button
-                    key={person.id}
-                    className={`list-group-item list-group-item-action ${selectedPerson && selectedPerson.id === person.id ? 'active' : ''}`}
-                    onClick={() => setSelectedPerson(person)}
-                  >
-                    {person.first_name} {person.last_name} {/* Display the person's name */}
-                  </button>
-                ))}
-              </div>
-            </div>
-            <div className="col-md-9">
-              {selectedPerson ? (
-                <>
-                  <div className="bg-success text-white p-3 mb-3 rounded">
-                     {selectedPerson.first_name} {selectedPerson.last_name}
-                  </div>
-                  <div className="chat-messages bg-light p-3 rounded mb-3" ref={chatMessagesRef} style={{ height: '400px', overflowY: 'scroll' }}>
-                    {messages.filter(msg => msg.receiver_id === selectedPerson.id || msg.sender_id === selectedPerson.id).map((msg, index) => (
-                      <div key={index} className="mb-2">
-                        <span className={`d-block p-2 rounded ${msg.sender_id === selectedPerson.id ? 'bg-success text-white' : 'bg-secondary text-white'}`}>
-                          {msg.content}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                  <div className="input-group">
-                    <input
-                      type="text"
-                      className="form-control"
-                      placeholder="Type a message"
-                      value={message}
-                      onChange={(e) => setMessage(e.target.value)}
-                    />
-                    <button
-                      onClick={sendMessage}
-                      className="btn btn-success"
-                    >
-                      Send
-                    </button>
-                  </div>
-                </>
-              ) : (
-                <div className="bg-success text-white p-3 rounded">
-                  Chats
+    <div className="flex h-screen">
+      <Sidebar isOpen={isSidebarOpen} toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} />
+      <div className={`flex-1 transition-all duration-300 ${isSidebarOpen ? 'ml-64' : 'ml-16'}`}>
+        <div className="flex flex-col h-full">
+          <div className="bg-[#183d3d] text-white p-3 rounded-t-lg">
+            {selectedPerson ? (
+              `${selectedPerson.first_name} ${selectedPerson.last_name}`
+            ) : (
+              "Chats"
+            )}
+          </div>
+          <div className="flex-1 bg-gray-100 p-4 overflow-auto">
+            <div ref={chatMessagesRef} className="flex flex-col-reverse space-y-4">
+              {messages.filter(msg => msg.receiver_id === selectedPerson?.id || msg.sender_id === selectedPerson?.id).map((msg, index) => (
+                <div key={index} className={`p-2 rounded-lg ${msg.sender_id === selectedPerson?.id ? 'bg-[#183d3d] text-white self-end' : 'bg-gray-300 text-black self-start'}`}>
+                  {msg.content}
                 </div>
-              )}
+              ))}
+            </div>
+          </div>
+          <div className="p-4 bg-white border-t border-gray-300">
+            <div className="flex space-x-2">
+              <input
+                type="text"
+                className="flex-1 p-2 border rounded-lg"
+                placeholder="Type a message"
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+              />
+              <button
+                onClick={sendMessage}
+                className="bg-[#183d3d] text-white px-4 py-2 rounded-lg hover:bg-[#1e4e4e]"
+              >
+                Send
+              </button>
             </div>
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
