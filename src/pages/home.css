@@ -1,6 +1,7 @@
 body {
     font-family: 'Poppins', sans-serif;
     background-color: #FFFFFF;
+    font-size: xx-large;
 }
 
 .navbarDiv {
@@ -37,7 +38,7 @@ body {
 }
 
 .showcase-img {
-    width: 330px;
+    width: 400px;
     height: 500px;
     object-fit: cover;
 }
@@ -102,4 +103,8 @@ body {
     border-radius: 15px;
     transform: translateY(-400%);
     font-size: large;
+}
+.get-started-btn{
+    border:1px transparent ;
+    
 }
