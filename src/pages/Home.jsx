@@ -155,9 +155,9 @@ function Home() {
             <Row>
                 <Col xs={6} style={{ width: '1200px', paddingTop: '40px', textAlign: 'center', paddingLeft: '780px' }}>
                     <h2 style={{ fontWeight: "lighter" }}>
-                        "This app makes it so easy to learn
+                        This app makes it so easy to learn
                         at my own pace and the
-                        instructors are top-notch!"
+                        instructors are top-notch!
                     </h2><br/>
                     <h2>~Joel Ochieng</h2>
                 </Col>
@@ -165,10 +165,10 @@ function Home() {
             <Row>
                 <Col xs={6} style={{ width: '480px', paddingTop: '40px', textAlign: 'center', paddingLeft: '80px' }}>
                     <h2>
-                        "The photography courses on this
-                        app are amazing!! I've learned new 
+                        The photography courses on this
+                        app are amazing!! I have learnt new 
                         techniques that have taken my 
-                        work to the next level."
+                        work to the next level.
                     </h2><br/>
                     <h2>
                         ~Louis du Lac

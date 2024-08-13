@@ -77,7 +77,7 @@ const SignInForm = () => {
     <div style={containerStyle}>
       <div style={imageSideStyle}></div>
       <div style={formSideStyle}>
-        <div style={{ width: '100%', padding: '0 20px' }}>
+        <div style={{ width: '70%', padding: '0 20px' }}>
           <h3 className="text-center mb-4 text-black">Sign In</h3>
           {messages.successMessage && <div className="alert alert-success">{messages.successMessage}</div>}
           {messages.errorMessage && <div className="alert alert-danger">{messages.errorMessage}</div>}
