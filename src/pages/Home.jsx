@@ -3,7 +3,9 @@ import './home.css';
 import { Button, Col, Container, Row } from 'react-bootstrap';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCircleCheck, faSquareCheck } from '@fortawesome/free-regular-svg-icons';
+import { faSquareCheck } from '@fortawesome/free-regular-svg-icons';
+import { useNavigate } from 'react-router-dom';
+import './home.css';
 
 const images = [
   {
@@ -69,6 +71,14 @@ function Home() {
 
   const toggleFAQ = (index) => {
     setActiveIndex(activeIndex === index ? null : index);
+  };
+
+  const handleLoginClick = () => {
+    navigate('/signin'); // Navigate to login page
+  };
+
+  const handleSignupClick = () => {
+    navigate('/signup'); // Navigate to signup page
   };
 
   const faqs = [

@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import backgroundImage from './p5su.jpeg'; 
+import backgroundImage from './p5su.jpeg';
 
 const SignUpForm = () => {
   const [formData, setFormData] = useState({
@@ -10,13 +10,17 @@ const SignUpForm = () => {
     role: 'Instructor',
     email: '',
     password: '',
-    confirmPassword: ''
+    confirmPassword: '',
+    profilePicture: '',
+    bio: ''
   });
 
   const [messages, setMessages] = useState({
     successMessage: '',
     errorMessage: ''
   });
+
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -26,20 +30,52 @@ const SignUpForm = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
     if (formData.password !== formData.confirmPassword) {
       setMessages({ successMessage: '', errorMessage: 'Passwords do not match' });
-    } else {
-      setMessages({ successMessage: 'Registration was successful', errorMessage: '' });
-      setFormData({
-        firstName: '',
-        lastName: '',
-        role: 'Instructor',
-        email: '',
-        password: '',
-        confirmPassword: ''
+      return;
+    }
+
+    try {
+      const response = await fetch('http://127.0.0.1:5000/sign-up', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          role: formData.role,
+          email: formData.email,
+          password: formData.password,
+          profilePicture: formData.profilePicture,
+          bio: formData.bio,
+          verified: false // Assuming this is set to false by default
+        }),
       });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setMessages({ successMessage: 'Registration was successful', errorMessage: '' });
+        setFormData({
+          firstName: '',
+          lastName: '',
+          role: 'Instructor',
+          email: '',
+          password: '',
+          confirmPassword: '',
+          profilePicture: '',
+          bio: ''
+        });
+        navigate('/signin');
+      } else {
+        setMessages({ successMessage: '', errorMessage: data.message || 'Registration failed' });
+      }
+    } catch (error) {
+      setMessages({ successMessage: '', errorMessage: 'An error occurred. Please try again.' });
     }
   };
 
@@ -138,6 +174,25 @@ const SignUpForm = () => {
                 value={formData.confirmPassword}
                 onChange={handleChange}
                 required
+              />
+            </div>
+            <div className="mb-3">
+              <input
+                type="text"
+                className="form-control"
+                placeholder="Profile Picture URL"
+                name="profilePicture"
+                value={formData.profilePicture}
+                onChange={handleChange}
+              />
+            </div>
+            <div className="mb-3">
+              <textarea
+                className="form-control"
+                placeholder="Bio"
+                name="bio"
+                value={formData.bio}
+                onChange={handleChange}
               />
             </div>
             <button type="submit" className="btn btn-dark w-100">Sign Up</button>
