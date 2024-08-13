@@ -11,7 +11,7 @@ const SignUpForm = () => {
     email: '',
     password: '',
     confirmPassword: '',
-    profilePicture: '',
+    profilePicture: null,
     bio: ''
   });
 
@@ -23,10 +23,10 @@ const SignUpForm = () => {
   const navigate = useNavigate();
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value, type, files } = e.target;
     setFormData({
       ...formData,
-      [name]: value
+      [name]: type === 'file' ? files[0] : value
     });
   };
 
@@ -38,22 +38,20 @@ const SignUpForm = () => {
       return;
     }
 
+    const formDataToSend = new FormData();
+    formDataToSend.append('firstName', formData.firstName);
+    formDataToSend.append('lastName', formData.lastName);
+    formDataToSend.append('role', formData.role);
+    formDataToSend.append('email', formData.email);
+    formDataToSend.append('password', formData.password);
+    formDataToSend.append('profilePicture', formData.profilePicture);
+    formDataToSend.append('bio', formData.bio);
+    formDataToSend.append('verified', false);
+
     try {
       const response = await fetch('http://127.0.0.1:5000/sign-up', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          firstName: formData.firstName,
-          lastName: formData.lastName,
-          role: formData.role,
-          email: formData.email,
-          password: formData.password,
-          profilePicture: formData.profilePicture,
-          bio: formData.bio,
-          verified: false // Assuming this is set to false by default
-        }),
+        body: formDataToSend,
       });
 
       const data = await response.json();
@@ -67,7 +65,7 @@ const SignUpForm = () => {
           email: '',
           password: '',
           confirmPassword: '',
-          profilePicture: '',
+          profilePicture: null,
           bio: ''
         });
         navigate('/signin');
@@ -178,11 +176,10 @@ const SignUpForm = () => {
             </div>
             <div className="mb-3">
               <input
-                type="text"
+                type="file"
                 className="form-control"
-                placeholder="Profile Picture URL"
+                placeholder="Profile Picture"
                 name="profilePicture"
-                value={formData.profilePicture}
                 onChange={handleChange}
               />
             </div>

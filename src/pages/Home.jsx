@@ -1,9 +1,11 @@
+/* eslint-disable react/no-unescaped-entities */
 /* eslint-disable no-unused-vars */
 import React, { useState } from 'react';
-import './home.css';
 import { Button, Col, Container, Row } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCircleCheck, faSquareCheck } from '@fortawesome/free-regular-svg-icons';
+import { faSquareCheck } from '@fortawesome/free-regular-svg-icons';
+import { useNavigate } from 'react-router-dom';
+import './home.css';
 
 const images = [
     {
@@ -26,9 +28,18 @@ const images = [
 
 function Home() {
   const [activeIndex, setActiveIndex] = useState(null);
+  const navigate = useNavigate(); // Hook for navigation
 
   const toggleFAQ = (index) => {
     setActiveIndex(activeIndex === index ? null : index);
+  };
+
+  const handleLoginClick = () => {
+    navigate('/signin'); // Navigate to login page
+  };
+
+  const handleSignupClick = () => {
+    navigate('/signup'); // Navigate to signup page
   };
 
   const faqs = [
@@ -62,8 +73,8 @@ function Home() {
                     <h2><b>LOGO</b></h2>
                 </Col>
                 <Col>
-                    <Button className="login-btn">Login</Button>
-                    <Button className="signup-btn">Sign up</Button>
+                    <Button className="login-btn" onClick={handleLoginClick}>Login</Button>
+                    <Button className="signup-btn" onClick={handleSignupClick}>Sign up</Button>
                 </Col>
                 <Col></Col>
             </Row>
@@ -185,7 +196,7 @@ function Home() {
                 </Col>
             </Row>
         </Container>
-        <div style={{backgroundColor:'black', height:'300px'}} >
+        <div className='help' style={{backgroundColor:'black', height:'300px'}} >
 
         </div>
     </div>

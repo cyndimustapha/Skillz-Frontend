@@ -1,22 +1,23 @@
-/* eslint-disable no-unused-vars */
 import React, { useEffect, useState, useRef } from "react";
 import io from "socket.io-client";
 import { useNavigate } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
 import { useMessages } from "../components/MessagesContext";
-import './MessagesPage.css';  // Custom CSS file
 
 const socket = io("http://localhost:5173");
 
 const MessagesPage = () => {
   const { messages, setMessages, people, setPeople, selectedPerson, setSelectedPerson } = useMessages();
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-  const [message, setMessage] = useState(''); // Declare the message state
+  const [message, setMessage] = useState('');
   const navigate = useNavigate();
   const chatMessagesRef = useRef(null);
 
+  // Retrieve the current user's ID (replace with your actual logic to get the user ID)
+  const currentUserId = localStorage.getItem('user_id');
+
+  // Fetch conversations and set up socket listeners
   useEffect(() => {
-    // Retrieve and set conversations
     fetch('http://127.0.0.1:5000/users/conversations', {
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('token')}`,
@@ -24,13 +25,16 @@ const MessagesPage = () => {
     })
       .then(response => response.json())
       .then(data => {
-        setPeople(data);
+        if (Array.isArray(data)) {
+          setPeople(data);
+        } else {
+          console.error('Unexpected data format for conversations:', data);
+        }
       })
       .catch(error => {
-        console.error('Error fetching people:', error);
+        console.error('Error fetching conversations:', error);
       });
 
-    // Set up socket.io connections
     socket.on("connect", () => {
       console.log("Connected to the server");
     });
@@ -40,105 +44,167 @@ const MessagesPage = () => {
     });
 
     socket.on("message", (data) => {
-      setMessages((prevMessages) => [...prevMessages, data]);
+      setMessages((prevMessages) => {
+        if (Array.isArray(prevMessages)) {
+          return [...prevMessages, data];
+        } else {
+          console.error('prevMessages is not an array:', prevMessages);
+          return [data]; // Reset to a new array if the previous state is invalid
+        }
+      });
     });
 
     return () => {
       socket.disconnect();
     };
-  }, []);
+  }, [setPeople, setMessages]);
 
-  const handleBackClick = () => {
-    navigate(-1); // Go back one step in history
-  };
-
-  const sendMessage = () => {
-    if (message.trim() && selectedPerson) {
-      const newMessage = {
-        content: message,
-        sender_id: 1, // Replace with the actual sender ID
-        receiver_id: selectedPerson.id,
-        timestamp: new Date(),
-      };
-      
-      socket.emit("sendMessage", newMessage);
-      setMessages((prevMessages) => [...prevMessages, newMessage]);
-      setMessage(''); // Clear the input field
+  // Fetch messages for the selected person
+  useEffect(() => {
+    if (selectedPerson) {
+      fetch(`http://127.0.0.1:5000/messages?user_id=${selectedPerson.id}`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        }
+      })
+        .then(response => response.json())
+        .then(data => {
+          if (Array.isArray(data)) {
+            setMessages(data);
+          } else {
+            console.error('Unexpected data format for messages:', data);
+          }
+        })
+        .catch(error => {
+          console.error('Error fetching messages:', error);
+        });
     }
-  };
+  }, [selectedPerson, setMessages]);
 
+  // Scroll to the bottom of the chat messages
   useEffect(() => {
     if (chatMessagesRef.current) {
       chatMessagesRef.current.scrollTop = chatMessagesRef.current.scrollHeight;
     }
   }, [messages]);
 
+  // Handle message sending
+  const sendMessage = () => {
+    if (message.trim() && selectedPerson) {
+      const newMessage = {
+        content: message,
+        sender_id: parseInt(currentUserId, 10), // Replace with actual sender ID
+        receiver_id: selectedPerson.id,
+        timestamp: new Date(),
+      };
+      
+      // Emit message via socket
+      socket.emit("sendMessage", newMessage);
+      setMessages((prevMessages) => {
+        if (Array.isArray(prevMessages)) {
+          return [...prevMessages, newMessage];
+        } else {
+          console.error('prevMessages is not an array:', prevMessages);
+          return [newMessage]; // Reset to a new array if the previous state is invalid
+        }
+      });
+      setMessage('');
+
+      // Persist the message to the database
+      fetch('http://127.0.0.1:5000/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify(newMessage)
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log('Message saved:', data);
+      })
+      .catch(error => {
+        console.error('Error saving message:', error);
+      });
+    }
+  };
+
+  // Handle back navigation
+  const handleBackClick = () => {
+    navigate(-1);
+  };
+
   return (
-    <>
-      <div className="d-flex">
-        <Sidebar isOpen={isSidebarOpen} toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} />
-        <div className={`content-container ${isSidebarOpen ? 'with-sidebar' : 'without-sidebar'}`}>
-          <div className="row">
-            <div className="col-md-3 border-right">
-              <button
-                onClick={handleBackClick}
-                className="btn btn-success mb-3"
+    <div className="flex h-screen">
+      <Sidebar isOpen={isSidebarOpen} toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} />
+      <div className={`flex-1 transition-all duration-300 ${isSidebarOpen ? 'ml-64' : 'ml-16'} flex`}>
+        {/* Conversations List */}
+        <div className="w-64 bg-gray-100 border-r border-gray-300">
+          <div className="p-4 bg-[#183d3d] text-white">
+            Conversations
+          </div>
+          <div className="p-2 overflow-y-auto h-[calc(100vh-4rem)]">
+            {people.map(person => (
+              <div
+                key={person.id}
+                className={`p-2 cursor-pointer hover:bg-gray-200 ${selectedPerson?.id === person.id ? 'bg-gray-300' : ''}`}
+                onClick={() => setSelectedPerson(person)}
               >
-                Back
-              </button>
-              <div className="list-group">
-                {people.map((person) => (
-                  <button
-                    key={person.id}
-                    className={`list-group-item list-group-item-action ${selectedPerson && selectedPerson.id === person.id ? 'active' : ''}`}
-                    onClick={() => setSelectedPerson(person)}
-                  >
-                    {person.first_name} {person.last_name} {/* Display the person's name */}
-                  </button>
-                ))}
+                {person.first_name} {person.last_name}
               </div>
-            </div>
-            <div className="col-md-9">
-              {selectedPerson ? (
-                <>
-                  <div className="bg-success text-white p-3 mb-3 rounded">
-                     {selectedPerson.first_name} {selectedPerson.last_name}
+            ))}
+          </div>
+        </div>
+
+        {/* Chat Area */}
+        <div className="flex-1 flex flex-col">
+          <div className="bg-[#183d3d] text-white p-3">
+            {selectedPerson ? (
+              `${selectedPerson.first_name} ${selectedPerson.last_name}`
+            ) : (
+              "Chats"
+            )}
+          </div>
+          <div className="flex-1 bg-gray-100 p-4 overflow-auto">
+            <div ref={chatMessagesRef} className="flex flex-col space-y-4">
+              {messages.length > 0 ? (
+                messages.map((msg, index) => (
+                  <div
+                    key={index}
+                    className={`p-2 rounded-lg max-w-xs ${
+                      msg.sender_id === parseInt(currentUserId, 10)
+                        ? 'bg-[#183d3d] text-white self-end ml-auto'
+                        : 'bg-gray-300 text-black self-start mr-auto'
+                    }`}
+                  >
+                    {msg.content}
                   </div>
-                  <div className="chat-messages bg-light p-3 rounded mb-3" ref={chatMessagesRef} style={{ height: '400px', overflowY: 'scroll' }}>
-                    {messages.filter(msg => msg.receiver_id === selectedPerson.id || msg.sender_id === selectedPerson.id).map((msg, index) => (
-                      <div key={index} className="mb-2">
-                        <span className={`d-block p-2 rounded ${msg.sender_id === selectedPerson.id ? 'bg-success text-white' : 'bg-secondary text-white'}`}>
-                          {msg.content}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                  <div className="input-group">
-                    <input
-                      type="text"
-                      className="form-control"
-                      placeholder="Type a message"
-                      value={message}
-                      onChange={(e) => setMessage(e.target.value)}
-                    />
-                    <button
-                      onClick={sendMessage}
-                      className="btn btn-success"
-                    >
-                      Send
-                    </button>
-                  </div>
-                </>
+                ))
               ) : (
-                <div className="bg-success text-white p-3 rounded">
-                  Chats
-                </div>
+                <div>Start chatting</div>
               )}
+            </div>
+          </div>
+          <div className="p-4 bg-white border-t border-gray-300">
+            <div className="flex space-x-2">
+              <input
+                type="text"
+                className="flex-1 p-2 border rounded-lg"
+                placeholder="Type a message"
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+              />
+              <button
+                onClick={sendMessage}
+                className="bg-[#183d3d] text-white px-4 py-2 rounded-lg hover:bg-[#1e4e4e]"
+              >
+                Send
+              </button>
             </div>
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

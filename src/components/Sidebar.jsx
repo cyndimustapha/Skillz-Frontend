@@ -1,8 +1,8 @@
 /* eslint-disable no-unused-vars */
+
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { FaBars, FaHome, FaEnvelope, FaBell, FaSearch, FaCog, FaSignOutAlt } from 'react-icons/fa';
-import './Sidebar.css';
+import { FaBars, FaHome, FaEnvelope, FaBell, FaSearch, FaCog, FaSignOutAlt, FaTachometerAlt } from 'react-icons/fa';
 
 const Sidebar = () => {
     const [isOpen, setIsOpen] = useState(true);
@@ -12,58 +12,62 @@ const Sidebar = () => {
     };
 
     return (
-        <div className={`sidebar ${isOpen ? 'open' : 'closed'}`}>
-            <div className="sidebar-header">
-                <FaBars onClick={toggleSidebar} />
+        <div className={`fixed top-0 left-0 h-screen transition-all duration-300 ${isOpen ? 'w-64' : 'w-20'} bg-[#040d12] text-white flex flex-col justify-between`}>
+            <div className="p-4 flex justify-between items-center">
+                {isOpen && <h1 className="text-lg font-bold">Skillz</h1>}
+                <FaBars onClick={toggleSidebar} className="cursor-pointer" />
             </div>
-            <ul className="sidebar-menu">
-                <li>
-                    <Link to="/Home">
-                        <FaHome className="icon" /> 
-                        {isOpen && <span>Home</span>}
+            <ul className="flex-1 list-none p-0 m-0">
+                <li className="p-4 flex items-center hover:bg-[#183d3d] rounded-md">
+                    <Link to="/" className="flex items-center text-white text-base no-underline">
+                        <FaHome className="text-2xl" />
+                        {isOpen && <span className="ml-2">Home</span>}
                     </Link>
                 </li>
-                <li>
-                    <Link to="/LearnersDashboard">
-                        <FaCog className="icon" /> 
-                        {isOpen && <span>Dashboard</span>}
+                <li className="p-4 flex items-center hover:bg-[#183d3d] rounded-md">
+                    <Link to="/Dashboard" className="flex items-center text-white text-base no-underline">
+                        <FaTachometerAlt className="text-2xl" />
+                        {isOpen && <span className="ml-2">Dashboard</span>}
                     </Link>
                 </li>
-                <li>
-                    <Link to="/messages">
-                        <FaEnvelope className="icon" /> 
-                        {isOpen && <span>Chats</span>}
+                <li className="p-4 flex items-center hover:bg-[#183d3d] rounded-md">
+                    <Link to="/messages" className="flex items-center text-white text-base no-underline">
+                        <FaEnvelope className="text-2xl" />
+                        {isOpen && <span className="ml-2">Chats</span>}
                     </Link>
                 </li>
-                <li>
-                    <Link to="/Notifications">
-                        <FaBell className="icon" /> 
-                        {isOpen && <span>Notifications</span>}
+                <li className="p-4 flex items-center hover:bg-[#183d3d] rounded-md">
+                    <Link to="/Notifications" className="flex items-center text-white text-base no-underline">
+                        <FaBell className="text-2xl" />
+                        {isOpen && <span className="ml-2">Notifications</span>}
                     </Link>
                 </li>
-                <li>
-                    <Link to="/Browser">
-                        <FaSearch className="icon" /> 
-                        {isOpen && <span>Browse</span>}
+                <li className="p-4 flex items-center hover:bg-[#183d3d] rounded-md">
+                    <Link to="/Browser" className="flex items-center text-white text-base no-underline">
+                        <FaSearch className="text-2xl" />
+                        {isOpen && <span className="ml-2">Browse</span>}
                     </Link>
                 </li>
             </ul>
-            <div className="sidebar-bottom">
-                <ul className="sidebar-menu">
-                    <li>
-                        <Link to="/Settings">
-                            <FaCog className="icon" /> 
-                            {isOpen && <span>Settings</span>}
+            <div className="p-4">
+                <ul className="list-none p-0 m-0">
+                    <li className="p-4 flex items-center hover:bg-[#183d3d] rounded-md">
+                        <Link to="/Settings" className="flex items-center text-white text-base no-underline">
+                            <FaCog className="text-2xl" />
+                            {isOpen && <span className="ml-2">Settings</span>}
                         </Link>
                     </li>
-                    <li>
-                        <button className="logout-button" onClick={() => {
-                            localStorage.removeItem('token');
-                            localStorage.removeItem('user');
-                            window.location.href = '/signin'; // Redirect to login page
-                        }}>
-                            <FaSignOutAlt className="icon" /> 
-                            {isOpen && <span>Logout</span>}
+                    <li className="p-4 flex items-center hover:bg-[#183d3d] rounded-md">
+                        <button
+                            className="flex items-center text-white text-base no-underline bg-transparent border-none cursor-pointer"
+                            onClick={() => {
+                                localStorage.removeItem('token');
+                                localStorage.removeItem('user');
+                                window.location.href = '/signin';
+                            }}
+                        >
+                            <FaSignOutAlt className="text-2xl" />
+                            {isOpen && <span className="ml-2">Logout</span>}
                         </button>
                     </li>
                 </ul>

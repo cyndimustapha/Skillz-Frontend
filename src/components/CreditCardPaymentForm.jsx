@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCreditCard } from "@fortawesome/free-solid-svg-icons";
@@ -35,39 +34,38 @@ const CreditCardPaymentForm = ({ handleCardSubmit }) => {
   };
 
   return (
-    <div className="space-y-4 text-lg text-gray-800">
+    <div className="p-6 bg-white rounded-lg shadow-lg w-full max-w-md mx-auto">
+      <h2 className="text-2xl font-semibold mb-4">Credit Card Payment</h2>
+
       {/* Email Input */}
-      <div className="flex flex-col">
-        <label htmlFor="email" className="text- font-medium text-gray-700">
+      <div className="mb-4">
+        <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
           Email
         </label>
         <input
           id="email"
           type="email"
-          name="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="border border-slate-400 rounded-md p-3 w-full max-w-xs focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="border border-gray-300 rounded-md p-3 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
           placeholder="Email"
         />
       </div>
 
       {/* Card Information */}
-      <div className="flex flex-col">
-        <label htmlFor="cardNumber" className="text- font-medium text-gray-700">
+      <div className="mb-4">
+        <label htmlFor="cardNumber" className="block text-sm font-medium text-gray-700 mb-1">
           Card Information
         </label>
         <div className="relative">
           <input
             id="cardNumber"
-            name="cardNumber"
             type="text"
             value={cardNumber}
             onChange={(e) => setCardNumber(e.target.value)}
-            className="border border-slate-400 rounded-md p-3 pr-10 w-full max-w-xs focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="border border-gray-300 rounded-md p-3 pr-10 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="Card Number"
           />
-          {/* Dynamic card type icon */}
           <FontAwesomeIcon
             icon={getCardTypeIcon()}
             className="absolute right-3 top-1/2 transform -translate-y-1/2 text-blue-500"
@@ -75,30 +73,24 @@ const CreditCardPaymentForm = ({ handleCardSubmit }) => {
         </div>
         <div className="flex gap-4 mt-2">
           <div className="flex-1">
-            <label htmlFor="mm" className="text-sm font-medium text-gray-700 sr-only">
-              MM
-            </label>
+            <label htmlFor="mm" className="sr-only">MM</label>
             <input
-              type="number"
-              name="mm"
               id="mm"
+              type="number"
               value={mm}
               onChange={(e) => setMm(e.target.value)}
-              className="border border-slate-400 rounded-md p-3 w-full max-w-xs focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="border border-gray-300 rounded-md p-3 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="MM"
             />
           </div>
           <div className="flex-1">
-            <label htmlFor="yy" className="text-sm font-medium text-gray-700 sr-only">
-              YY
-            </label>
+            <label htmlFor="yy" className="sr-only">YY</label>
             <input
-              type="number"
-              name="yy"
               id="yy"
+              type="number"
               value={yy}
               onChange={(e) => setYy(e.target.value)}
-              className="border border-slate-400 rounded-md p-3 w-full max-w-xs focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="border border-gray-300 rounded-md p-3 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="YY"
             />
           </div>
@@ -106,55 +98,50 @@ const CreditCardPaymentForm = ({ handleCardSubmit }) => {
       </div>
 
       {/* CVV */}
-      <div className="flex flex-col">
-        <label htmlFor="cvv" className="text- font-medium text-gray-700">
+      <div className="mb-4">
+        <label htmlFor="cvv" className="block text-sm font-medium text-gray-700 mb-1">
           CVV
         </label>
         <input
-          type="number"
-          name="cvv"
           id="cvv"
+          type="number"
           value={cvv}
           onChange={(e) => setCvv(e.target.value)}
-          className="border border-slate-400 rounded-md p-3 w-full max-w-xs focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="border border-gray-300 rounded-md p-3 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
           placeholder="CVV"
         />
       </div>
 
       {/* Full Name */}
-      <div className="flex flex-col">
-        <label htmlFor="fullName" className="text- font-medium text-gray-700">
+      <div className="mb-4">
+        <label htmlFor="fullName" className="block text-sm font-medium text-gray-700 mb-1">
           Full Name
         </label>
         <input
           id="fullName"
-          name="fullName"
           type="text"
           value={fullName}
           onChange={(e) => setFullName(e.target.value)}
-          className="border border-slate-400 rounded-md p-3 w-full max-w-xs focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="border border-gray-300 rounded-md p-3 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
           placeholder="Full Name"
         />
       </div>
 
       {/* Country Selection */}
-      <div className="flex flex-col">
-        <label htmlFor="country" className="text- font-medium text-gray-700">
+      <div className="mb-4">
+        <label htmlFor="country" className="block text-sm font-medium text-gray-700 mb-1">
           Country or Region
         </label>
         <select
-          name="country"
           id="country"
           value={country}
           onChange={(e) => setCountry(e.target.value)}
-          className="border border-slate-400 rounded-md p-3 w-full max-w-xs focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="border border-gray-300 rounded-md p-3 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
-          <option value="" disabled>
-            Select Country
-          </option>
-          {countries.map((country) => (
-            <option key={country.id} value={country.id}>
-              {country.name}
+          <option value="" disabled>Select Country</option>
+          {countries.map((c) => (
+            <option key={c.id} value={c.id}>
+              {c.name}
             </option>
           ))}
         </select>
