@@ -13,9 +13,7 @@ const MessagesPage = () => {
   const [message, setMessage] = useState('');
   const navigate = useNavigate();
   const chatMessagesRef = useRef(null);
-  const currentUser = 1; // Replace with the actual logged-in user's ID
 
-  // Fetch conversations and handle socket events
   useEffect(() => {
     fetch('http://127.0.0.1:5000/users/conversations', {
       headers: {
@@ -24,6 +22,7 @@ const MessagesPage = () => {
     })
       .then(response => response.json())
       .then(data => {
+        console.log('Fetched conversations:', data);
         setPeople(data);
       })
       .catch(error => {
@@ -47,61 +46,47 @@ const MessagesPage = () => {
     };
   }, [setPeople, setMessages]);
 
-  // Scroll to the bottom of the chat whenever messages change
+  const handleBackClick = () => {
+    navigate(-1);
+  };
+
+  const sendMessage = () => {
+    if (message.trim() && selectedPerson) {
+      const newMessage = {
+        content: message,
+        sender_id: 1, // Replace with actual sender ID
+        receiver_id: selectedPerson.id,
+        timestamp: new Date(),
+      };
+      
+      socket.emit("sendMessage", newMessage);
+      setMessages((prevMessages) => [...prevMessages, newMessage]);
+      setMessage('');
+
+      // Persist the message to the database
+      fetch('http://127.0.0.1:5000/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify(newMessage)
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log('Message saved:', data);
+      })
+      .catch(error => {
+        console.error('Error saving message:', error);
+      });
+    }
+  };
+
   useEffect(() => {
     if (chatMessagesRef.current) {
       chatMessagesRef.current.scrollTop = chatMessagesRef.current.scrollHeight;
     }
   }, [messages]);
-
-  // Fetch messages for the selected conversation
-  useEffect(() => {
-    if (selectedPerson) {
-      fetch(`http://127.0.0.1:5000/messages?receiver_id=${selectedPerson.id}`, {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
-        }
-      })
-        .then(response => response.json())
-        .then(data => {
-          setMessages(data);
-        })
-        .catch(error => {
-          console.error('Error fetching messages:', error);
-        });
-    }
-  }, [selectedPerson, setMessages]);
-
-  // Handle sending a message
-  const sendMessage = () => {
-    if (message.trim() && selectedPerson) {
-      const newMessage = {
-        content: message,
-        sender_id: currentUser, // Replace with dynamic current user ID
-        receiver_id: selectedPerson.id,
-        timestamp: new Date(),
-      };
-
-      socket.emit("sendMessage", newMessage);
-      setMessages((prevMessages) => [...prevMessages, newMessage]);
-      setMessage('');
-
-      // Optionally, persist the message to the backend
-      fetch('http://127.0.0.1:5000/messages', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
-        },
-        body: JSON.stringify({
-          receiver_id: selectedPerson.id,
-          message: message
-        }),
-      }).catch(error => {
-        console.error('Error sending message:', error);
-      });
-    }
-  };
 
   return (
     <div className="flex h-screen">
@@ -140,8 +125,13 @@ const MessagesPage = () => {
                 messages
                   .filter(msg => msg.receiver_id === selectedPerson.id || msg.sender_id === selectedPerson.id)
                   .map((msg, index) => (
-                    <div key={index} className={`p-2 rounded-lg ${msg.sender_id === currentUser ? 'bg-[#183d3d] text-white self-end' : 'bg-gray-300 text-black self-start'}`}>
-                      {msg.message}
+                    <div
+                      key={index}
+                      className={`p-2 rounded-lg ${
+                        msg.sender_id === 1 ? 'bg-[#183d3d] text-white self-end' : 'bg-gray-300 text-black self-start'
+                      }`}
+                    >
+                      {msg.content}
                     </div>
                   ))
               ) : (
