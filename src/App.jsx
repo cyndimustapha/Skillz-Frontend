@@ -10,6 +10,7 @@ import InstructorProfile from './components/InstructorProfile';
 
 const App = () => {
   return (
+    <Router>
       <MessagesProvider> 
         <div className="App">
           <div className="content">
@@ -17,14 +18,16 @@ const App = () => {
               <Route path="/" element={<SignUpForm />} />
               <Route path="/signin" element={<SignInForm />} />
               <Route path="/learnersdashboard" element={<LearnersDashboard />} />
-        <Route path="/instructorprofile" element={<InstructorProfile />} />
+              <Route path="/instructorprofile" element={<InstructorProfile />} />
               <Route path="/messages" element={<MessagesPage />} />
               <Route path="/payment" element={<PaymentPage />} />
+              {/* Home component should be rendered through a Route */}
+              <Route path="/home" element={<Home />} />
             </Routes>
           </div>
         </div>
       </MessagesProvider>
-     
+    </Router>
   );
 };
 

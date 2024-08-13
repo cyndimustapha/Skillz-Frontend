@@ -70,10 +70,10 @@ const InstructorProfile = () => {
       flexWrap: 'wrap',
     },
     courseCard: {
-      backgroundColor: '#23443C', // Darker green for course cards
+      backgroundColor: '#23443C', 
       padding: '10px',
       borderRadius: '5px',
-      width: 'calc(33.33% - 20px)', // Adjust to fit three cards per row with gaps
+      width: 'calc(33.33% - 20px)', 
       boxSizing: 'border-box',
     },
     courseImage: {
