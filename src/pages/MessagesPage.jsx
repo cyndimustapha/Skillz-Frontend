@@ -162,7 +162,7 @@ const MessagesPage = () => {
             {selectedPerson ? (
               `${selectedPerson.first_name} ${selectedPerson.last_name}`
             ) : (
-              "Select a conversation"
+              "Chats"
             )}
           </div>
           <div className="flex-1 bg-gray-100 p-4 overflow-auto">
@@ -181,7 +181,7 @@ const MessagesPage = () => {
                   </div>
                 ))
               ) : (
-                <div>Select a person to start chatting</div>
+                <div>Start chatting</div>
               )}
             </div>
           </div>
