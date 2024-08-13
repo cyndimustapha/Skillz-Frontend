@@ -184,7 +184,7 @@ function Home() {
                 </Col>
             </Row>
         </Container>
-        <div style={{backgroundColor:'black', height:'300px'}} >
+        <div className='help' style={{backgroundColor:'black', height:'300px'}} >
 
         </div>
     </div>

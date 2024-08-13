@@ -4,11 +4,11 @@ body, html {
     height: 100%;
     width: 100%;
     font-family: 'Poppins', sans-serif;
-    background-color: #5C8374;
+    background-color: #ffffff;
     color: #000000;
   }
   
-  .container {
+  .profile-container {
     height: 100%;
     width: 100%;
     display: flex;
