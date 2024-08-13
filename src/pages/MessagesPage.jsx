@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import React, { useEffect, useState, useRef } from "react";
 import io from "socket.io-client";
 import { useNavigate } from "react-router-dom";
@@ -14,6 +13,7 @@ const MessagesPage = () => {
   const navigate = useNavigate();
   const chatMessagesRef = useRef(null);
 
+  // Fetch conversations and set up socket listeners
   useEffect(() => {
     fetch('http://127.0.0.1:5000/users/conversations', {
       headers: {
@@ -22,11 +22,14 @@ const MessagesPage = () => {
     })
       .then(response => response.json())
       .then(data => {
-        console.log('Fetched conversations:', data);
-        setPeople(data);
+        if (Array.isArray(data)) {
+          setPeople(data);
+        } else {
+          console.error('Unexpected data format for conversations:', data);
+        }
       })
       .catch(error => {
-        console.error('Error fetching people:', error);
+        console.error('Error fetching conversations:', error);
       });
 
     socket.on("connect", () => {
@@ -38,7 +41,14 @@ const MessagesPage = () => {
     });
 
     socket.on("message", (data) => {
-      setMessages((prevMessages) => [...prevMessages, data]);
+      setMessages((prevMessages) => {
+        if (Array.isArray(prevMessages)) {
+          return [...prevMessages, data];
+        } else {
+          console.error('prevMessages is not an array:', prevMessages);
+          return [data]; // Reset to a new array if the previous state is invalid
+        }
+      });
     });
 
     return () => {
@@ -46,10 +56,36 @@ const MessagesPage = () => {
     };
   }, [setPeople, setMessages]);
 
-  const handleBackClick = () => {
-    navigate(-1);
-  };
+  // Fetch messages for the selected person
+  useEffect(() => {
+    if (selectedPerson) {
+      fetch(`http://127.0.0.1:5000/messages?user_id=${selectedPerson.id}`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        }
+      })
+        .then(response => response.json())
+        .then(data => {
+          if (Array.isArray(data)) {
+            setMessages(data);
+          } else {
+            console.error('Unexpected data format for messages:', data);
+          }
+        })
+        .catch(error => {
+          console.error('Error fetching messages:', error);
+        });
+    }
+  }, [selectedPerson, setMessages]);
 
+  // Scroll to the bottom of the chat messages
+  useEffect(() => {
+    if (chatMessagesRef.current) {
+      chatMessagesRef.current.scrollTop = chatMessagesRef.current.scrollHeight;
+    }
+  }, [messages]);
+
+  // Handle message sending
   const sendMessage = () => {
     if (message.trim() && selectedPerson) {
       const newMessage = {
@@ -59,8 +95,16 @@ const MessagesPage = () => {
         timestamp: new Date(),
       };
       
+      // Emit message via socket
       socket.emit("sendMessage", newMessage);
-      setMessages((prevMessages) => [...prevMessages, newMessage]);
+      setMessages((prevMessages) => {
+        if (Array.isArray(prevMessages)) {
+          return [...prevMessages, newMessage];
+        } else {
+          console.error('prevMessages is not an array:', prevMessages);
+          return [newMessage]; // Reset to a new array if the previous state is invalid
+        }
+      });
       setMessage('');
 
       // Persist the message to the database
@@ -82,11 +126,10 @@ const MessagesPage = () => {
     }
   };
 
-  useEffect(() => {
-    if (chatMessagesRef.current) {
-      chatMessagesRef.current.scrollTop = chatMessagesRef.current.scrollHeight;
-    }
-  }, [messages]);
+  // Handle back navigation
+  const handleBackClick = () => {
+    navigate(-1);
+  };
 
   return (
     <div className="flex h-screen">
@@ -121,9 +164,8 @@ const MessagesPage = () => {
           </div>
           <div className="flex-1 bg-gray-100 p-4 overflow-auto">
             <div ref={chatMessagesRef} className="flex flex-col space-y-4">
-              {selectedPerson ? (
+              {messages.length > 0 ? (
                 messages
-                  .filter(msg => msg.receiver_id === selectedPerson.id || msg.sender_id === selectedPerson.id)
                   .map((msg, index) => (
                     <div
                       key={index}
