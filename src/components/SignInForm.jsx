@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import backgroundImage from './p5si.webp'; 
 
@@ -14,6 +14,8 @@ const SignInForm = () => {
     errorMessage: ''
   });
 
+  const navigate = useNavigate();
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({
@@ -22,13 +24,32 @@ const SignInForm = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setMessages({ successMessage: 'Sign In successful', errorMessage: '' });
-    setFormData({
-      email: '',
-      password: ''
-    });
+
+    try {
+      const response = await fetch('http://127.0.0.1:5000/sign-in', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setMessages({ successMessage: 'Sign In successful', errorMessage: '' });
+        // Save the JWT token in localStorage or a context
+        localStorage.setItem('token', data.token);
+        // Redirect to dashboard or other protected route
+        navigate('/dashboard');
+      } else {
+        setMessages({ successMessage: '', errorMessage: data.message });
+      }
+    } catch (error) {
+      setMessages({ successMessage: '', errorMessage: 'An error occurred. Please try again.' });
+    }
   };
 
   const containerStyle = {

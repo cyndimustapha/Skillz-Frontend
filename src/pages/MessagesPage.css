@@ -1,0 +1,62 @@
+
+.container-fluid {
+    transition: margin-left 0.3s ease, padding 0.3s ease; /* Smooth transition for sidebar toggle */
+    padding: 80px; /* Add padding to prevent content from touching the edges */
+}
+
+/* Sidebar open and closed states */
+.with-sidebar {
+    margin-left: 250px; /* Space for the sidebar when open */
+}
+
+.without-sidebar {
+    margin-left: 60px; /* Adjust space for the sidebar when closed */
+}
+
+/* People List Styles */
+.people-list {
+    width: 200px;
+}
+
+/* Chat Area Styles */
+.chat-area {
+    flex: 1;
+    margin-left: 20px;
+}
+
+.chat-messages {
+    height: 400px;
+    overflow-y: scroll;
+    background-color: #f7f7f7;
+    padding: 15px;
+    border-radius: 5px;
+}
+
+.chat-messages .bg-primary {
+    background-color: #183d3d;
+    color: white;
+}
+
+.chat-messages .bg-secondary {
+    background-color: #183d3d;
+    color: white;
+}
+
+.chat-messages .d-block {
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+/* Input Group Styles */
+.input-group {
+    margin-top: 20px;
+}
+
+.input-group .form-control {
+    border-radius: 0;
+}
+
+.input-group .btn {
+    border-radius: 0;
+}
