@@ -13,6 +13,9 @@ const MessagesPage = () => {
   const navigate = useNavigate();
   const chatMessagesRef = useRef(null);
 
+  // Retrieve the current user's ID (replace with your actual logic to get the user ID)
+  const currentUserId = localStorage.getItem('user_id');
+
   // Fetch conversations and set up socket listeners
   useEffect(() => {
     fetch('http://127.0.0.1:5000/users/conversations', {
@@ -90,7 +93,7 @@ const MessagesPage = () => {
     if (message.trim() && selectedPerson) {
       const newMessage = {
         content: message,
-        sender_id: 1, // Replace with actual sender ID
+        sender_id: parseInt(currentUserId, 10), // Replace with actual sender ID
         receiver_id: selectedPerson.id,
         timestamp: new Date(),
       };
@@ -165,17 +168,18 @@ const MessagesPage = () => {
           <div className="flex-1 bg-gray-100 p-4 overflow-auto">
             <div ref={chatMessagesRef} className="flex flex-col space-y-4">
               {messages.length > 0 ? (
-                messages
-                  .map((msg, index) => (
-                    <div
-                      key={index}
-                      className={`p-2 rounded-lg ${
-                        msg.sender_id === 1 ? 'bg-[#183d3d] text-white self-end' : 'bg-gray-300 text-black self-start'
-                      }`}
-                    >
-                      {msg.content}
-                    </div>
-                  ))
+                messages.map((msg, index) => (
+                  <div
+                    key={index}
+                    className={`p-2 rounded-lg max-w-xs ${
+                      msg.sender_id === parseInt(currentUserId, 10)
+                        ? 'bg-[#183d3d] text-white self-end ml-auto'
+                        : 'bg-gray-300 text-black self-start mr-auto'
+                    }`}
+                  >
+                    {msg.content}
+                  </div>
+                ))
               ) : (
                 <div>Select a person to start chatting</div>
               )}
