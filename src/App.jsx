@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import SignUpForm from './components/SignUpForm';
 import SignInForm from './components/SignInForm';
 import LearnersDashboard from './pages/LearnersDashboard';
+
 import MessagesPage from './pages/MessagesPage';
 import { MessagesProvider } from './components/MessagesContext'; 
 import Home from './pages/Home';
@@ -26,6 +27,7 @@ const App = () => {
         </Router>
       </div>
     </MessagesProvider>
+
   );
 };
 
