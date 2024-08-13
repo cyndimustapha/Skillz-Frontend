@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import React, { useEffect, useState, useRef } from "react";
 import io from "socket.io-client";
 import { useNavigate } from "react-router-dom";
@@ -14,6 +13,10 @@ const MessagesPage = () => {
   const navigate = useNavigate();
   const chatMessagesRef = useRef(null);
 
+  // Retrieve the current user's ID (replace with your actual logic to get the user ID)
+  const currentUserId = localStorage.getItem('user_id');
+
+  // Fetch conversations and set up socket listeners
   useEffect(() => {
     fetch('http://127.0.0.1:5000/users/conversations', {
       headers: {
@@ -22,11 +25,14 @@ const MessagesPage = () => {
     })
       .then(response => response.json())
       .then(data => {
-        console.log('Fetched conversations:', data);
-        setPeople(data);
+        if (Array.isArray(data)) {
+          setPeople(data);
+        } else {
+          console.error('Unexpected data format for conversations:', data);
+        }
       })
       .catch(error => {
-        console.error('Error fetching people:', error);
+        console.error('Error fetching conversations:', error);
       });
 
     socket.on("connect", () => {
@@ -38,7 +44,14 @@ const MessagesPage = () => {
     });
 
     socket.on("message", (data) => {
-      setMessages((prevMessages) => [...prevMessages, data]);
+      setMessages((prevMessages) => {
+        if (Array.isArray(prevMessages)) {
+          return [...prevMessages, data];
+        } else {
+          console.error('prevMessages is not an array:', prevMessages);
+          return [data]; // Reset to a new array if the previous state is invalid
+        }
+      });
     });
 
     return () => {
@@ -46,30 +59,80 @@ const MessagesPage = () => {
     };
   }, [setPeople, setMessages]);
 
-  const handleBackClick = () => {
-    navigate(-1);
-  };
-
-  const sendMessage = () => {
-    if (message.trim() && selectedPerson) {
-      const newMessage = {
-        content: message,
-        sender_id: 1,
-        receiver_id: selectedPerson.id,
-        timestamp: new Date(),
-      };
-      
-      socket.emit("sendMessage", newMessage);
-      setMessages((prevMessages) => [...prevMessages, newMessage]);
-      setMessage('');
+  // Fetch messages for the selected person
+  useEffect(() => {
+    if (selectedPerson) {
+      fetch(`http://127.0.0.1:5000/messages?user_id=${selectedPerson.id}`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        }
+      })
+        .then(response => response.json())
+        .then(data => {
+          if (Array.isArray(data)) {
+            setMessages(data);
+          } else {
+            console.error('Unexpected data format for messages:', data);
+          }
+        })
+        .catch(error => {
+          console.error('Error fetching messages:', error);
+        });
     }
-  };
+  }, [selectedPerson, setMessages]);
 
+  // Scroll to the bottom of the chat messages
   useEffect(() => {
     if (chatMessagesRef.current) {
       chatMessagesRef.current.scrollTop = chatMessagesRef.current.scrollHeight;
     }
   }, [messages]);
+
+  // Handle message sending
+  const sendMessage = () => {
+    if (message.trim() && selectedPerson) {
+      const newMessage = {
+        content: message,
+        sender_id: parseInt(currentUserId, 10), // Replace with actual sender ID
+        receiver_id: selectedPerson.id,
+        timestamp: new Date(),
+      };
+      
+      // Emit message via socket
+      socket.emit("sendMessage", newMessage);
+      setMessages((prevMessages) => {
+        if (Array.isArray(prevMessages)) {
+          return [...prevMessages, newMessage];
+        } else {
+          console.error('prevMessages is not an array:', prevMessages);
+          return [newMessage]; // Reset to a new array if the previous state is invalid
+        }
+      });
+      setMessage('');
+
+      // Persist the message to the database
+      fetch('http://127.0.0.1:5000/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify(newMessage)
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log('Message saved:', data);
+      })
+      .catch(error => {
+        console.error('Error saving message:', error);
+      });
+    }
+  };
+
+  // Handle back navigation
+  const handleBackClick = () => {
+    navigate(-1);
+  };
 
   return (
     <div className="flex h-screen">
@@ -104,14 +167,19 @@ const MessagesPage = () => {
           </div>
           <div className="flex-1 bg-gray-100 p-4 overflow-auto">
             <div ref={chatMessagesRef} className="flex flex-col space-y-4">
-              {selectedPerson ? (
-                messages
-                  .filter(msg => msg.receiver_id === selectedPerson.id || msg.sender_id === selectedPerson.id)
-                  .map((msg, index) => (
-                    <div key={index} className={`p-2 rounded-lg ${msg.sender_id === 1 ? 'bg-[#183d3d] text-white self-end' : 'bg-gray-300 text-black self-start'}`}>
-                      {msg.content}
-                    </div>
-                  ))
+              {messages.length > 0 ? (
+                messages.map((msg, index) => (
+                  <div
+                    key={index}
+                    className={`p-2 rounded-lg max-w-xs ${
+                      msg.sender_id === parseInt(currentUserId, 10)
+                        ? 'bg-[#183d3d] text-white self-end ml-auto'
+                        : 'bg-gray-300 text-black self-start mr-auto'
+                    }`}
+                  >
+                    {msg.content}
+                  </div>
+                ))
               ) : (
                 <div>Select a person to start chatting</div>
               )}
