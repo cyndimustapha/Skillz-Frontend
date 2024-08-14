@@ -117,23 +117,6 @@ function Home() {
           <Col xs={8}>
             <h2><b>SKILLZ</b></h2>
           </Col>
-          <Col>
-            {isLoggedIn ? (
-              <img
-                src={profilePicture}
-                alt="Profile"
-                className="profile-picture"
-                onClick={handleProfilePictureClick}
-                style={{ cursor: 'pointer', borderRadius: '50%', width: '50px', height: '50px' }}
-              />
-            ) : (
-              <>
-              <NavLink to={'/signin'}><Button className="login-btn">Login</Button></NavLink>
-                <NavLink to={'/signup'}><Button className="signup-btn">Sign up</Button></NavLink> 
-                
-              </>
-            )}
-          </Col>
           <Col></Col>
         </Row>
       </Container>
@@ -149,7 +132,7 @@ function Home() {
           </Col>
         </Row>
       </Container>
-      <Container className="image-container">
+      <Container className='image-container'>
         <Row>
           {images.map((obj, index) => (
             <Col key={index} xs={3}>

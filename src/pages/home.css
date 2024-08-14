@@ -30,7 +30,10 @@ body {
 }
 
 .get-started-btn {
-    background-color: #014E10;
+    background-color: #183d3d;
+}
+.get-started-btn:hover{
+    background-color: #798383;
 }
 
 .image-container {
@@ -38,7 +41,7 @@ body {
 }
 
 .showcase-img {
-    width: 400px;
+    width: 1000px;
     height: 500px;
     object-fit: cover;
 }
