@@ -9,6 +9,7 @@ import Home from './pages/Home';
 import PaymentPage from './pages/PaymentPage';
 import './index.css';
 import Profile from './pages/InstructorProfile';
+import InstructorProfile from './components/InstructorProfile'; 
 
 const App = () => {
   return (
@@ -20,11 +21,14 @@ const App = () => {
               <Route path="/" element={<Home />} />
               <Route path="/signin" element={<SignInForm />} />
               <Route path="/signup" element={<SignUpForm />} />
-              <Route path="/dashboard" element={<LearnersDashboard />} />
+              <Route path="/learnersdashboard" element={<LearnersDashboard />} />
+              <Route path="/instructorprofile" element={<InstructorProfile />} />
               <Route path="/messages" element={<MessagesPage />} />
-              <Route path="/payment" element={<PaymentPage />} /> 
+              <Route path="/payment" element={<PaymentPage />} />
               <Route path='/profile' element={<Profile/>}/>
               <Route path='/browser' element={< Browser/>}/>
+              {/* Home component should be rendered through a Route */}
+              <Route path="/home" element={<Home />} />
             </Routes> 
           </div>
         </Router>
