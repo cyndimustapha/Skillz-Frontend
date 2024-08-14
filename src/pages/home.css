@@ -1,6 +1,7 @@
 body {
     font-family: 'Poppins', sans-serif;
     background-color: #FFFFFF;
+    font-size: xx-large;
 }
 
 .navbarDiv {
@@ -29,7 +30,10 @@ body {
 }
 
 .get-started-btn {
-    background-color: #014E10;
+    background-color: #183d3d;
+}
+.get-started-btn:hover{
+    background-color: #798383;
 }
 
 .image-container {
@@ -37,7 +41,7 @@ body {
 }
 
 .showcase-img {
-    width: 330px;
+    width: 1000px;
     height: 500px;
     object-fit: cover;
 }
@@ -102,4 +106,8 @@ body {
     border-radius: 15px;
     transform: translateY(-400%);
     font-size: large;
+}
+.get-started-btn{
+    border:1px transparent ;
+    
 }
