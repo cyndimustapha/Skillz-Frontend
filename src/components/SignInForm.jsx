@@ -37,7 +37,7 @@ const SignInForm = () => {
       });
 
       const data = await response.json();
-
+      console.log(data)
       if (response.ok) {
         setMessages({ successMessage: 'Sign In successful', errorMessage: '' });
         // Save the JWT token in localStorage or a context
