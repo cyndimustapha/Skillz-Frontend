@@ -53,7 +53,7 @@ const InstructorDashboard = ({ user }) => {
     formData.append('upload_preset', 'YOUR_UPLOAD_PRESET'); // Replace with your Cloudinary upload preset
 
     try {
-      const response = await fetch('https://api.cloudinary.com/v1_1/YOUR_CLOUD_NAME/image/upload', {
+      const response = await fetch('https://api.cloudinary.com/v1_1/dx0dgxzpk/image/upload', {
         method: 'POST',
         body: formData,
       });
@@ -132,7 +132,7 @@ const InstructorDashboard = ({ user }) => {
           </Modal.Header>
           <Modal.Body>
             <Form onSubmit={handleSubmit}>
-              <Form.Group className="mb-3" controlId="formCourseTitle">
+              <Form.Group controlId="courseTitle">
                 <Form.Label>Title</Form.Label>
                 <Form.Control
                   type="text"
@@ -143,29 +143,19 @@ const InstructorDashboard = ({ user }) => {
                   required
                 />
               </Form.Group>
-              <Form.Group className="mb-3" controlId="formCourseImage">
-                <Form.Label>Image</Form.Label>
+              <Form.Group controlId="courseDescription">
+                <Form.Label>Description</Form.Label>
                 <Form.Control
-                  type="file"
-                  accept="image/*"
-                  onChange={handleImageChange}
+                  as="textarea"
+                  rows={3}
+                  placeholder="Enter course description"
+                  name="description"
+                  value={newCourse.description}
+                  onChange={handleChange}
+                  required
                 />
-                <Button
-                  variant="secondary"
-                  onClick={handleImageUpload}
-                  disabled={uploading}
-                >
-                  {uploading ? 'Uploading...' : 'Upload Image'}
-                </Button>
-                {newCourse.image_url && (
-                  <img
-                    src={newCourse.image_url}
-                    alt="Course"
-                    className="mt-2 w-full h-40 object-cover rounded"
-                  />
-                )}
               </Form.Group>
-              <Form.Group className="mb-3" controlId="formCoursePrice">
+              <Form.Group controlId="coursePrice">
                 <Form.Label>Price</Form.Label>
                 <Form.Control
                   type="number"
@@ -176,18 +166,21 @@ const InstructorDashboard = ({ user }) => {
                   required
                 />
               </Form.Group>
-              <Form.Group className="mb-3" controlId="formCourseDescription">
-                <Form.Label>Description</Form.Label>
+              <Form.Group controlId="courseImage">
+                <Form.Label>Image</Form.Label>
                 <Form.Control
-                  as="textarea"
-                  rows={3}
-                  placeholder="Enter course description"
-                  name="description"
-                  value={newCourse.description}
-                  onChange={handleChange}
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageChange}
                 />
+                {imageFile && !uploading && (
+                  <Button variant="secondary" onClick={handleImageUpload} className="mt-2">
+                    Upload Image
+                  </Button>
+                )}
+                {uploading && <p>Uploading image...</p>}
               </Form.Group>
-              <Button variant="primary" type="submit">
+              <Button variant="primary" type="submit" className="mt-3">
                 Add Course
               </Button>
             </Form>

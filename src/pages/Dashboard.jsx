@@ -1,6 +1,5 @@
-/* eslint-disable no-unused-vars */
-import React, { useEffect, useState }from 'react';
-import LearnerDashboard from './LearnersDashboard';
+import React, { useEffect, useState } from 'react';
+import LearnersDashboard from './LearnersDashboard';
 import InstructorDashboard from './InstructorDashboard';
 import Sidebar from '../components/Sidebar';
 import './Dashboard.css'; // Import custom CSS
@@ -15,7 +14,7 @@ const Dashboard = () => {
       console.error('No token found');
       return;
     }
-  
+
     fetch('http://127.0.0.1:5000/users', {
       method: 'GET',
       headers: {
@@ -23,25 +22,32 @@ const Dashboard = () => {
         'Authorization': `Bearer ${token}`,
       }
     })
-    .then((response) => response.json())
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.json();
+    })
     .then((data) => {
       setUser(data);
-      setUserRole(data.role); 
+      setUserRole(data.role); // Ensure 'role' is correctly set
     })
     .catch((error) => {
       console.error('Error fetching user data:', error);
     });
   }, []);
-  
+
   if (!userRole) {
     return <div>Loading...</div>;
   }
+
+  console.log('User Role:', userRole); // Debugging: Check what role is being set
 
   return (
     <div className="dashboard-container">
       <Sidebar />
       <div className="content-container">
-        {userRole === 'learner' ? <LearnerDashboard user={user} /> : <InstructorDashboard user={user} />}
+        {userRole === 'learner' ? <LearnersDashboard user={user} /> : <InstructorDashboard user={user} />}
       </div>
     </div>
   );
