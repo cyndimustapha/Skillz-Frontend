@@ -1,14 +1,16 @@
-import { useEffect, useState } from 'react';
+/* eslint-disable no-unused-vars */
+import React, { useEffect, useState }from 'react';
 import LearnerDashboard from './LearnersDashboard';
 import InstructorDashboard from './InstructorDashboard';
-import sidebar from '../components/Sidebar';
+import Sidebar from '../components/Sidebar';
+import './Dashboard.css'; // Import custom CSS
 
 const Dashboard = () => {
   const [userRole, setUserRole] = useState(null);
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    const token = localStorage.getItem('token'); // Retrieve the token from localStorage or state
+    const token = localStorage.getItem('token');
     if (!token) {
       console.error('No token found');
       return;
@@ -18,7 +20,7 @@ const Dashboard = () => {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`, // Make sure `token` contains the JWT
+        'Authorization': `Bearer ${token}`,
       }
     })
     .then((response) => response.json())
@@ -36,8 +38,11 @@ const Dashboard = () => {
   }
 
   return (
-    <div>
-      {userRole === 'learner' ? <LearnerDashboard user={user} /> : <InstructorDashboard user={user} />}
+    <div className="dashboard-container">
+      <Sidebar />
+      <div className="content-container">
+        {userRole === 'learner' ? <LearnerDashboard user={user} /> : <InstructorDashboard user={user} />}
+      </div>
     </div>
   );
 };

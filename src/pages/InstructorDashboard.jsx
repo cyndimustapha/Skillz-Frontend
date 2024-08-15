@@ -1,7 +1,8 @@
+/* eslint-disable react/prop-types */
 import { useEffect, useState } from 'react';
 import Sidebar from '../components/Sidebar';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import emptyCoursesImage from './empty-courses.png'; // Add a relevant image
+import { FaPlus } from 'react-icons/fa'; // Import the plus icon
 
 const InstructorDashboard = ({ user }) => {
   const [courses, setCourses] = useState([]);
@@ -27,14 +28,16 @@ const InstructorDashboard = ({ user }) => {
         <div>
           {courses.length === 0 ? (
             <div className="text-center">
-              <img src={emptyCoursesImage} alt="No courses" className="mx-auto mb-4 w-1/2" />
-              <h3 className="text-xl font-semibold mb-2">You have no courses yet!</h3>
-              <p className="text-gray-600 mb-4">It looks like you haven't created any courses. Start creating your first course to share your knowledge!</p>
-              <a href="/create-course">
-                <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
-                  Create Your First Course
-                </button>
-              </a>
+              <div className="flex flex-col items-center mb-4">
+                <FaPlus className="text-6xl text-gray-400 mb-2" />
+                <h3 className="text-xl font-semibold mb-2">You have no courses yet!</h3>
+                <p className="text-gray-600 mb-4">It looks like you haven't created any courses. Start creating your first course to share your knowledge!</p>
+                <a href="/create-course">
+                  <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                    Create Your First Course
+                  </button>
+                </a>
+              </div>
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
@@ -42,7 +45,9 @@ const InstructorDashboard = ({ user }) => {
                 <div key={course.id} className="bg-white p-4 rounded shadow">
                   <img src={course.image_url || "https://via.placeholder.com/150"} alt={course.title} className="w-full h-40 object-cover rounded mb-2" />
                   <h4 className="text-lg font-semibold">{course.title}</h4>
-                  <p className="text-gray-700">{course.user.first_name} {course.user.last_name}</p>
+                  <p className="text-gray-700">
+                    {course.user ? `${course.user.first_name} ${course.user.last_name}` : 'Instructor info not available'}
+                  </p>
                 </div>
               ))}
             </div>
