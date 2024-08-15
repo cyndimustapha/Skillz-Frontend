@@ -138,7 +138,7 @@ const SignUpForm = () => {
                 required
               >
                 <option value="Instructor">Instructor</option>
-                <option value="Learner">Learner</option>
+                <option value="learner">Learner</option>
               </select>
             </div>
             <div className="mb-3">

@@ -1,4 +1,5 @@
-import React, { useEffect, useState, useRef } from "react";
+/* eslint-disable no-unused-vars */
+import { useEffect, useState, useRef } from "react";
 import io from "socket.io-client";
 import { useNavigate } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
@@ -131,9 +132,9 @@ const MessagesPage = () => {
   };
 
   // Handle back navigation
-  const handleBackClick = () => {
-    navigate(-1);
-  };
+  //const handleBackClick = () => {
+   // navigate(-1);
+  //};
 
   return (
     <div className="flex h-screen">
