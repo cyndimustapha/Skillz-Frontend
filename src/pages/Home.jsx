@@ -108,6 +108,7 @@ function Home() {
 
   return (
     <div>
+
         <div >
         <Sidebar/>
         </div>
@@ -128,6 +129,7 @@ function Home() {
               <Button className="get-started-btn" onClick={handleGetStarted} >Get Started</Button>
               <NavLink to={'/dashboard'}><Button className='get-started-btn' style={{marginLeft:'20px'}}>My dashboard</Button></NavLink>
               
+
             </div>
           </Col>
         </Row>
