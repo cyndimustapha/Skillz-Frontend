@@ -1,64 +1,56 @@
-// import React from 'react';
-import Profile from '../components/Profile';
-import CourseCard from '../components/CourseCard';
+import { useEffect, useState } from 'react';
+import Sidebar from '../components/Sidebar';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import emptyCoursesImage from './empty-courses.png'; // Add a relevant image
 
-const InstructorDashboard = () => {
-  const profile = {
-    image: 'https://example.com/profile.jpg', // Replace with your image URL
-    name: 'Bill Kiprop',
-    bio: 'I am a certified martial arts instructor. Buy my course',
-  };    
+const InstructorDashboard = ({ user }) => {
+  const [courses, setCourses] = useState([]);
 
-  const courses = [
-    {
-      image: 'https://example.com/course1.jpg',
-      title: 'Martial Arts for Beginners',
-      category: 'Martial Arts',
-      rating: 4.5,
-      enrolled: 23235,
-      tokens: 10,
-    },
-    {
-      image: 'https://example.com/course2.jpg',
-      title: 'Intermediate Martial Arts',
-      category: 'Martial Arts',
-      rating: 4.7,
-      enrolled: 11235,
-      tokens: 15,
-    },
-    {
-      image: 'https://example.com/course3.jpg',
-      title: 'Advanced Martial Arts',
-      category: 'Martial Arts',
-      rating: 4.9,
-      enrolled: 8350,
-      tokens: 20,
-    },
-  ];
+  useEffect(() => {
+    fetch(`http://127.0.0.1:5000/courses?instructor_id=${user.id}`)
+      .then((response) => response.json())
+      .then((data) => {
+        setCourses(data);
+      })
+      .catch((error) => {
+        console.error('Error fetching data:', error);
+      });
+  }, [user.id]);
 
   return (
-    <div style={styles.dashboard}>
-      <Profile profile={profile} />
-      <h3>COURSES:</h3>
-      <div style={styles.courseList}>
-        {courses.map((course, index) => (
-          <CourseCard key={index} course={course} />
-        ))}
+    <div className="flex">
+      <Sidebar />
+      <div className="flex-1 p-6">
+        <div className="mb-6">
+          <h2 className="text-2xl font-semibold">Dashboard</h2>
+        </div>
+        <div>
+          {courses.length === 0 ? (
+            <div className="text-center">
+              <img src={emptyCoursesImage} alt="No courses" className="mx-auto mb-4 w-1/2" />
+              <h3 className="text-xl font-semibold mb-2">You have no courses yet!</h3>
+              <p className="text-gray-600 mb-4">It looks like you haven't created any courses. Start creating your first course to share your knowledge!</p>
+              <a href="/create-course">
+                <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                  Create Your First Course
+                </button>
+              </a>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+              {courses.map(course => (
+                <div key={course.id} className="bg-white p-4 rounded shadow">
+                  <img src={course.image_url || "https://via.placeholder.com/150"} alt={course.title} className="w-full h-40 object-cover rounded mb-2" />
+                  <h4 className="text-lg font-semibold">{course.title}</h4>
+                  <p className="text-gray-700">{course.user.first_name} {course.user.last_name}</p>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
-};
-
-const styles = {
-  dashboard: {
-    backgroundColor: '#4a6d61',
-    padding: '20px',
-    minHeight: '100vh',
-  },
-  courseList: {
-    display: 'flex',
-    flexWrap: 'wrap',
-  },
 };
 
 export default InstructorDashboard;
