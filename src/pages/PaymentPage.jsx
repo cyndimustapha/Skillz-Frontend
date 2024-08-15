@@ -1,5 +1,4 @@
 import { useState } from "react";
-import axios from "axios";
 import MpesaPaymentForm from "../components/MpesaPaymentForm";
 import CreditCardPaymentForm from "../components/CreditCardPaymentForm";
 
@@ -19,10 +18,23 @@ const PaymentPage = () => {
   const [loading, setLoading] = useState(false);
 
   // Submit phone for STK push
-  const handlePhoneSubmit = async () => {
+  const handlePhoneSubmit = async (phoneNumber) => {
     try {
       setLoading(true);
-      await axios.post("http://localhost:8000/sendSTKPush");
+      const response = await fetch("http://localhost:5000/sendSTKPush", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ phone: phoneNumber, amount: 10 }), // Example with a fixed amount of 1000
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log("STK Push Response: ", data);
     } catch (error) {
       console.log("Error: ", error);
     } finally {
@@ -31,7 +43,7 @@ const PaymentPage = () => {
   };
 
   // Submit card details
-  const handleCardSubmit = async () => {
+  const handleCardSubmit = () => {
     console.log("Submitting card details");
   };
 
@@ -62,7 +74,7 @@ const PaymentPage = () => {
         {paymentMethod === 2 && (
           <MpesaPaymentForm
             loading={loading}
-            handlePhoneSubmit={handlePhoneSubmit}
+            handlePhoneSubmit={(phoneNumber) => handlePhoneSubmit(phoneNumber)} // Pass the phone number to handlePhoneSubmit
           />
         )}
         {paymentMethod === 1 && (

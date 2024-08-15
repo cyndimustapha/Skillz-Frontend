@@ -41,7 +41,7 @@ const SignInForm = () => {
       });
 
       const data = await response.json();
-
+      console.log(data)
       if (response.ok) {
         setMessages({ successMessage: 'Sign In successful', errorMessage: '' });
         setEmailFor2FA(formData.email);
