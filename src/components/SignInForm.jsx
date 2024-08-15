@@ -43,7 +43,7 @@ const SignInForm = () => {
         // Save the JWT token in localStorage or a context
         localStorage.setItem('token', data.token);
         // Redirect to dashboard or other protected route
-        navigate('/dashboard');
+        navigate('/');
       } else {
         setMessages({ successMessage: '', errorMessage: data.message });
       }
