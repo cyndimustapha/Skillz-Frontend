@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import backgroundImage from './p5si.webp'; 
+import backgroundImage from './p5si.webp';
+import TwoFactorAuth from './TwoFactorAuth'; // Import the modal component
 
 const SignInForm = () => {
   const [formData, setFormData] = useState({
@@ -13,6 +14,9 @@ const SignInForm = () => {
     successMessage: '',
     errorMessage: ''
   });
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [emailFor2FA, setEmailFor2FA] = useState('');
 
   const navigate = useNavigate();
 
@@ -40,10 +44,8 @@ const SignInForm = () => {
 
       if (response.ok) {
         setMessages({ successMessage: 'Sign In successful', errorMessage: '' });
-        // Save the JWT token in localStorage or a context
-        localStorage.setItem('token', data.token);
-        // Redirect to dashboard or other protected route
-        navigate('/dashboard');
+        setEmailFor2FA(formData.email);
+        setIsModalOpen(true); // Open the modal for 2FA
       } else {
         setMessages({ successMessage: '', errorMessage: data.message });
       }
@@ -111,6 +113,13 @@ const SignInForm = () => {
           </p>
         </div>
       </div>
+      {isModalOpen && (
+        <TwoFactorAuth
+          email={emailFor2FA}
+          onClose={() => setIsModalOpen(false)}
+          onSuccess={() => navigate('/dashboard')}
+        />
+      )}
     </div>
   );
 };
