@@ -1,6 +1,6 @@
 // import React from 'react';
 import Profile from '../components/Profile';
-import CourseCard from '../components/CourseCard';
+import CourseCard from '../components/CourseContent';
 
 const InstructorDashboard = () => {
   const profile = {

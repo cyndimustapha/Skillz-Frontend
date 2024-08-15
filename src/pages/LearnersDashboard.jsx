@@ -1,53 +1,32 @@
-/* eslint-disable no-unused-vars */
-import React from 'react';
-import Sidebar from '../components/Sidebar'; // Import your Sidebar component
-import  { useEffect, useState } from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import './LearnersDashboard.css'; // Import custom CSS if needed
+// import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const LearnersDashboard = () => {
-  const [courses, setCourses] = useState([]);
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    fetch('http://127.0.0.1:5000/courses')
-      .then((response) => response.json())
-      .then((data) => {
-        setCourses(data);
-      })
-      .catch((error) => {
-        console.error('Error fetching data:', error);
-      });
-  }, []);
+  const handleCourseClick = (courseId) => {
+    navigate(`/coursecontent/${courseId}`);
+  };
+
+  // Example courses data
+  const courses = [
+    { id: '1', name: 'Course 1' },
+    { id: '2', name: 'Course 2' },
+    // ...other courses
+  ];
 
   return (
-    <div className="dashboard-container">
-      {/* Sidebar Component */}
-      <Sidebar />
-
-      <div className="content-container">
-        <div className="header">
-          <h2>Dashboard</h2>
-        </div>
-        <div className="content">
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px' }}>
-            <div style={{ flex: '1 1 calc(33.333% - 20px)', backgroundColor: '#ffffff', padding: '10px', borderRadius: '5px' }}>
-              <img src="https://via.placeholder.com/150" alt="Cooking For Beginners" style={{ width: '100%', borderRadius: '5px' }} />
-              <h4>Cooking For Beginners</h4>
-              <p>Bill Kiprop</p>
-            </div>
-            <div style={{ flex: '1 1 calc(33.333% - 20px)', backgroundColor: '#ffffff', padding: '10px', borderRadius: '5px' }}>
-              <img src="https://via.placeholder.com/150" alt="Painting Landscapes" style={{ width: '100%', borderRadius: '5px' }} />
-              <h4>Painting Landscapes</h4>
-              <p>Bill Kiprop</p>
-            </div>
-            <div style={{ flex: '1 1 calc(33.333% - 20px)', backgroundColor: '#ffffff', padding: '10px', borderRadius: '5px' }}>
-              <img src="https://via.placeholder.com/150" alt="Fighting Back" style={{ width: '100%', borderRadius: '5px' }} />
-              <h4>Fighting Back</h4>
-              <p>Bill Kiprop</p>
-            </div>
-          </div>
-        </div>
-      </div>
+    <div>
+      <h1>Learners Dashboard</h1>
+      <ul>
+        {courses.map((course) => (
+          <li key={course.id}>
+            <button onClick={() => handleCourseClick(course.id)}>
+              {course.name}
+            </button>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 };

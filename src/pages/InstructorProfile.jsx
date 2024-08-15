@@ -1,6 +1,6 @@
 
 
-import React, { useState, useEffect } from 'react';
+import  { useState, useEffect } from 'react';
 import './profile.css';
 import { Col, Container, Row } from 'react-bootstrap';
 import BASE_URL from './UTILS';
