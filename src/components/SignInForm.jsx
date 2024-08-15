@@ -45,10 +45,7 @@ const SignInForm = () => {
       if (response.ok) {
         setMessages({ successMessage: 'Sign In successful', errorMessage: '' });
 
-        // Save the JWT token in localStorage or a context
-        localStorage.setItem('token', data.token);
-        // Redirect to dashboard or other protected route
-        navigate('/');
+
 
         setEmailFor2FA(formData.email);
         setIsModalOpen(true); // Open the modal for 2FA
