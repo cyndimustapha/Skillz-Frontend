@@ -11,6 +11,7 @@ import './index.css';
 import Profile from './pages/InstructorProfile';
 import InstructorProfile from './components/InstructorProfile'; 
 import TwoFactorAuth from './components/TwoFactorAuth'
+import UsersList from './pages/users';
 
 const App = () => {
   return (
@@ -28,6 +29,7 @@ const App = () => {
               <Route path="/payment" element={<PaymentPage />} />
               <Route path='/profile' element={<Profile/>}/>
               <Route path='/browser' element={< Browser/>}/>
+              <Route path='/users' element={<UsersList/>}/>
             </Routes> 
           </div>
         </Router>

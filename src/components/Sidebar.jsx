@@ -1,6 +1,7 @@
+// Sidebar.js
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { FaBars, FaHome, FaEnvelope, FaBell, FaSearch, FaCog, FaSignOutAlt, FaTachometerAlt } from 'react-icons/fa';
+import { FaBars, FaHome, FaEnvelope, FaBell, FaSearch, FaCog, FaSignOutAlt, FaTachometerAlt, FaUsers } from 'react-icons/fa';
 import BASE_URL from '../pages/UTILS';
 import './sidebar.css'; 
 
@@ -82,6 +83,14 @@ const Sidebar = () => {
                         {isOpen && <span className="sidebar-menu-item-text">Browse</span>}
                     </Link>
                 </li>
+                {isLoggedIn && (
+                    <li className="sidebar-menu-item">
+                        <Link to="/users" className="sidebar-menu-item-link">
+                            <FaUsers className="sidebar-menu-item-icon" />
+                            {isOpen && <span className="sidebar-menu-item-text">Users</span>}
+                        </Link>
+                    </li>
+                )}
             </ul>
             {isLoggedIn && (
                 <div className="profile-section">

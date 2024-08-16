@@ -1,46 +1,48 @@
+// src/components/Profile.js
 import React, { useState, useEffect } from "react";
 import "./profile.css";
 import { Col, Container, Row } from "react-bootstrap";
 import BASE_URL from "./UTILS";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUserPen } from "@fortawesome/free-solid-svg-icons";
+import Sidebar from "../components/Sidebar";
+import EditUserModal from "./editusermodal";
 
 const Profile = () => {
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+
+  const fetchUserData = async () => {
+    try {
+      const response = await fetch(`${BASE_URL}/users`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`, // assuming token is stored in localStorage
+        },
+      });
+      const data = await response.json();
+      setUser(data);
+    } catch (error) {
+      console.error("Error fetching the user data:", error);
+    }
+  };
+
+  const fetchCoursesData = async () => {
+    if (user && user.role === "instructor") {
+      try {
+        const response = await fetch(
+          `${BASE_URL}/courses?instructorId=${user.id}`
+        );
+        const data = await response.json();
+        setCourses(data);
+      } catch (error) {
+        console.error("Error fetching the courses:", error);
+      }
+    }
+  };
 
   useEffect(() => {
-    // Fetch the logged-in user's profile data
-    const fetchUserData = async () => {
-      try {
-        const response = await fetch(`${BASE_URL}/users`, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`, // assuming token is stored in localStorage
-          },
-        });
-        const data = await response.json();
-        setUser(data);
-      } catch (error) {
-        console.error("Error fetching the user data:", error);
-      }
-    };
-
-    // Fetch the courses data related to the user if they are an instructor
-    const fetchCoursesData = async () => {
-      if (user && user.role === "instructor") {
-        try {
-          const response = await fetch(
-            `${BASE_URL}/courses?instructorId=${user.id}`
-          );
-          const data = await response.json();
-          setCourses(data);
-        } catch (error) {
-          console.error("Error fetching the courses:", error);
-        }
-      }
-    };
-
     const fetchData = async () => {
       await fetchUserData();
       await fetchCoursesData();
@@ -50,12 +52,16 @@ const Profile = () => {
     fetchData();
   }, [user]);
 
+  const handleShowModal = () => setShowModal(true);
+  const handleCloseModal = () => setShowModal(false);
+
   if (loading) {
     return <div>Loading...</div>;
   }
 
   return (
     <div className="profile-container">
+      <Sidebar />
       <Container style={{ borderBottom: "1px solid black" }}>
         <Row>
           <Col xs={3}>
@@ -74,7 +80,11 @@ const Profile = () => {
             </div>
           </Col>
           <Col style={{ paddingLeft: "900px" }}>
-            <FontAwesomeIcon icon={faUserPen} />
+            <FontAwesomeIcon
+              icon={faUserPen}
+              onClick={handleShowModal}
+              style={{ cursor: "pointer" }}
+            />
           </Col>
         </Row>
         <Row>
@@ -107,6 +117,12 @@ const Profile = () => {
           </Row>
         )}
       </Container>
+      <EditUserModal
+        show={showModal}
+        handleClose={handleCloseModal}
+        user={user}
+        refreshUserData={fetchUserData}
+      />
     </div>
   );
 };
