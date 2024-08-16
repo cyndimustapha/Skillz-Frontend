@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { Container, Row, Col, Card, Button } from 'react-bootstrap';
+import { useParams, useNavigate } from 'react-router-dom';
 import BASE_URL from './UTILS';
 
-const GuitarLessons = ({ courseId }) => {
+const CourseContent = () => {
+    const { courseId } = useParams(); // Get courseId from route parameters
     const [course, setCourse] = useState(null);
     const [contents, setContents] = useState([]);
     const [loading, setLoading] = useState(true);
+    const navigate = useNavigate();
 
     useEffect(() => {
         // Fetch course details
@@ -69,7 +72,13 @@ const GuitarLessons = ({ courseId }) => {
                         )}
                         <Card.Body>
                             <Card.Title>{course.title}</Card.Title>
-                            <Button variant="success" className="mb-3">View Instructor</Button>
+                            <Button
+                                variant="success"
+                                className="mb-3"
+                                onClick={() => navigate(`/instructor/${course.instructor_id}`)}
+                            >
+                                View Instructor
+                            </Button>
                             <Card.Text>
                                 <strong>About</strong>
                                 <p style={{ marginTop: '10px' }}>
@@ -104,10 +113,10 @@ const GuitarLessons = ({ courseId }) => {
                 </Col>
             </Row>
             <Row className="justify-content-center mt-4">
-                <Button variant="secondary">Back</Button>
+                <Button variant="secondary" onClick={() => navigate(-1)}>Back</Button>
             </Row>
         </Container>
     );
 };
 
-export default GuitarLessons;
+export default CourseContent;

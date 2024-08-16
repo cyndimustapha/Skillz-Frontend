@@ -1,4 +1,7 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable react/prop-types */
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import Sidebar from '../components/Sidebar';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { FaPlus } from 'react-icons/fa'; // Import the plus icon
@@ -14,6 +17,7 @@ const InstructorDashboard = ({ user }) => {
     image: null,
   });
   const [hover, setHover] = useState(false);
+  const navigate = useNavigate(); // Initialize useNavigate
 
   useEffect(() => {
     fetch(`http://127.0.0.1:5000/courses?instructor_id=${user.id}`)
@@ -67,6 +71,10 @@ const InstructorDashboard = ({ user }) => {
     }
   };
 
+  const handleCardClick = (courseId) => {
+    navigate(`/coursecontent/${courseId}`); // Navigate to the CourseContent page
+  };
+
   return (
     <div className="flex">
       <Sidebar />
@@ -101,8 +109,16 @@ const InstructorDashboard = ({ user }) => {
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
               {courses.map(course => (
-                <div key={course.id} className="bg-white p-4 rounded shadow">
-                  <img src={course.image_url || "https://via.placeholder.com/150"} alt={course.title} className="w-full h-40 object-cover rounded mb-2" />
+                <div
+                  key={course.id}
+                  className="bg-white p-4 rounded shadow cursor-pointer" // Add cursor-pointer class
+                  onClick={() => handleCardClick(course.id)} // Handle card click
+                >
+                  <img
+                    src={course.image_url || "https://via.placeholder.com/150"}
+                    alt={course.title}
+                    className="w-full h-40 object-cover rounded mb-2"
+                  />
                   <h4 className="text-lg font-semibold">{course.title}</h4>
                   <p className="text-gray-700">{course.description}</p>
                 </div>

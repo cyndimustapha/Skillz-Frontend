@@ -12,6 +12,7 @@ import Profile from './pages/InstructorProfile';
 import InstructorProfile from './components/InstructorProfile'; 
 import TwoFactorAuth from './components/TwoFactorAuth'
 import UsersList from './pages/users';
+import CourseContent from './pages/coursecontent'
 
 const App = () => {
   return (
@@ -30,6 +31,8 @@ const App = () => {
               <Route path='/profile' element={<Profile/>}/>
               <Route path='/browser' element={< Browser/>}/>
               <Route path='/users' element={<UsersList/>}/>
+              <Route path='/coursecontent/:courseId' element={<CourseContent/>}/>
+
             </Routes> 
           </div>
         </Router>
