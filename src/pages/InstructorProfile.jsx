@@ -62,7 +62,7 @@ const Profile = () => {
   return (
     <div className="profile-container">
       <Sidebar />
-      <Container style={{ borderBottom: "1px solid black" }}>
+      <Container style={{ borderBottom: "1px solid black" }} className="mr-3">
         <Row>
           <Col xs={3}>
             <div className="profile">

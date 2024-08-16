@@ -35,11 +35,14 @@ const UsersList = () => {
 
   return (
     <div>
+      <div>
       <Sidebar />
-      <Container className="mt-4">
+      </div>
+      <div>
+      <Container className="mt-4 mr-3" >
         <Row>
           {users.map((user) => (
-            <Col xs={12} sm={6} md={4} lg={3} key={user.id} className="mb-4">
+            <Col xs={4} sm={6} md={4} lg={3} key={user.id} className="mb-4" >
               <Card className="user-card" >
                 <Card.Img
                   variant="top"
@@ -57,6 +60,7 @@ const UsersList = () => {
           ))}
         </Row>
       </Container>
+      </div>
     </div>
   );
 };

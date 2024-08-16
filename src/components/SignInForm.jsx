@@ -121,7 +121,7 @@ const SignInForm = () => {
         <TwoFactorAuth
           email={emailFor2FA}
           onClose={() => setIsModalOpen(false)}
-          onSuccess={() => navigate('/dashboard')}
+          onSuccess={() => navigate('/')}
         />
       )}
     </div>
