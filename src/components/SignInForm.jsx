@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import backgroundImage from './p5si.webp';
 import TwoFactorAuth from './TwoFactorAuth'; // Import the modal component
+import BASE_URL from '../pages/UTILS';
 
 const SignInForm = () => {
   const [formData, setFormData] = useState({
@@ -32,7 +33,7 @@ const SignInForm = () => {
     e.preventDefault();
 
     try {
-      const response = await fetch('http://127.0.0.1:5000/sign-in', {
+      const response = await fetch(`${BASE_URL}/sign-in`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

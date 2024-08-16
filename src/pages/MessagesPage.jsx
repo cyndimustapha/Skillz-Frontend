@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
 import { useMessages } from "../components/MessagesContext";
 import { Col, Container, Row } from "react-bootstrap";
+import BASE_URL from "./UTILS";
 
 const socket = io("http://localhost:5173");
 
@@ -64,7 +65,7 @@ const MessagesPage = () => {
   // Fetch messages for the selected person
   useEffect(() => {
     if (selectedPerson) {
-      fetch(`http://127.0.0.1:5000/messages?user_id=${selectedPerson.id}`, {
+      fetch(`${BASE_URL}/messages?user_id=${selectedPerson.id}`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`,
         }
