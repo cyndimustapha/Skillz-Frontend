@@ -11,10 +11,8 @@ const InstructorDashboard = ({ user }) => {
     title: '',
     description: '',
     price: '',
-    image_url: '',
+    image: null,
   });
-  const [imageFile, setImageFile] = useState(null);
-  const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
     fetch(`http://127.0.0.1:5000/courses?instructor_id=${user.id}`)
@@ -39,57 +37,33 @@ const InstructorDashboard = ({ user }) => {
   };
 
   const handleImageChange = (e) => {
-    setImageFile(e.target.files[0]);
+    setNewCourse({
+      ...newCourse,
+      image: e.target.files[0],
+    });
   };
 
-  const handleImageUpload = async () => {
-    if (!imageFile) {
-      return;
-    }
-    setUploading(true);
-    
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
     const formData = new FormData();
-    formData.append('file', imageFile);
-    formData.append('upload_preset', 'YOUR_UPLOAD_PRESET'); // Replace with your Cloudinary upload preset
+    formData.append('title', newCourse.title);
+    formData.append('description', newCourse.description);
+    formData.append('price', newCourse.price);
+    formData.append('image', newCourse.image); // Use newCourse.image here
+    formData.append('instructor_id', user.id);
 
     try {
-      const response = await fetch('https://api.cloudinary.com/v1_1/dx0dgxzpk/image/upload', {
+      const response = await fetch('http://127.0.0.1:5000/courses', {
         method: 'POST',
-        body: formData,
+        body: formData, // Do NOT set Content-Type here
       });
-      
       const data = await response.json();
-      setNewCourse({
-        ...newCourse,
-        image_url: data.secure_url,
-      });
+      setCourses([...courses, data]);
+      handleModalClose();
     } catch (error) {
-      console.error('Error uploading image:', error);
-    } finally {
-      setUploading(false);
+      console.error('Error creating course:', error);
     }
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    fetch('http://127.0.0.1:5000/courses', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        ...newCourse,
-        instructor_id: user.id,
-      }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setCourses([...courses, data]);
-        handleModalClose();
-      })
-      .catch((error) => {
-        console.error('Error creating course:', error);
-      });
   };
 
   return (
@@ -173,12 +147,6 @@ const InstructorDashboard = ({ user }) => {
                   accept="image/*"
                   onChange={handleImageChange}
                 />
-                {imageFile && !uploading && (
-                  <Button variant="secondary" onClick={handleImageUpload} className="mt-2">
-                    Upload Image
-                  </Button>
-                )}
-                {uploading && <p>Uploading image...</p>}
               </Form.Group>
               <Button variant="primary" type="submit" className="mt-3">
                 Add Course
