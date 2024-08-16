@@ -71,12 +71,7 @@ const Sidebar = () => {
                         {isOpen && <span className="sidebar-menu-item-text">Chats</span>}
                     </Link>
                 </li>
-                <li className="sidebar-menu-item">
-                    <Link to="/Notifications" className="sidebar-menu-item-link">
-                        <FaBell className="sidebar-menu-item-icon" />
-                        {isOpen && <span className="sidebar-menu-item-text">Notifications</span>}
-                    </Link>
-                </li>
+               
                 <li className="sidebar-menu-item">
                     <Link to="/Browser" className="sidebar-menu-item-link">
                         <FaSearch className="sidebar-menu-item-icon" />
@@ -103,12 +98,7 @@ const Sidebar = () => {
                         {isOpen && <span className="profile-name">{profile.name}</span>}
                     </Link>
                     <ul className="list-none p-0 m-0 mt-4">
-                        <li className="sidebar-menu-item">
-                            <Link to="/Settings" className="sidebar-menu-item-link">
-                                <FaCog className="sidebar-menu-item-icon" />
-                                {isOpen && <span className="sidebar-menu-item-text">Settings</span>}
-                            </Link>
-                        </li>
+                       
                         <li className="sidebar-menu-item">
                             <button
                                 className="logout-button"

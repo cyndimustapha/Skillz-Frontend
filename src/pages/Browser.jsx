@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Container, Row, Col, Card, Button, Nav, Navbar, NavDropdown, ListGroup, NavLink } from 'react-bootstrap';
 import SearchBar from './searchbar';
 import Sidebar from '../components/Sidebar';
+import { Link } from 'react-router-dom';
 
 const Browser = () => {
   const [courses, setCourses] = useState([]);
@@ -109,9 +110,9 @@ const Browser = () => {
                       />
                       <span>{`${course.instructor?.first_name} ${course.instructor?.last_name}`}</span>
                     </div>
-                    <NavLink to={'/payment'}>
+                    <Link to={'/payment'}>
                     <Button variant="light" style={{ marginTop: '10px' }}>Enroll</Button>
-                    </NavLink>
+                    </Link>
                    
                   </Card.Body>
                 </Card>

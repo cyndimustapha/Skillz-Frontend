@@ -50,7 +50,7 @@ const Profile = () => {
     };
 
     fetchData();
-  }, [user]);
+  }, []);
 
   const handleShowModal = () => setShowModal(true);
   const handleCloseModal = () => setShowModal(false);
