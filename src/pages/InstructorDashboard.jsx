@@ -13,6 +13,7 @@ const InstructorDashboard = ({ user }) => {
     price: '',
     image: null,
   });
+  const [hover, setHover] = useState(false);
 
   useEffect(() => {
     fetch(`http://127.0.0.1:5000/courses?instructor_id=${user.id}`)
@@ -50,7 +51,7 @@ const InstructorDashboard = ({ user }) => {
     formData.append('title', newCourse.title);
     formData.append('description', newCourse.description);
     formData.append('price', newCourse.price);
-    formData.append('image', newCourse.image); // Use newCourse.image here
+    formData.append('file', newCourse.image); // Use newCourse.image here
     formData.append('instructor_id', user.id);
 
     try {
@@ -73,15 +74,28 @@ const InstructorDashboard = ({ user }) => {
         <div className="mb-6">
           <h2 className="text-2xl font-semibold">Dashboard</h2>
         </div>
+
+        {/* Button for Adding Course */}
+        <div className="mb-6 text-center">
+          <Button
+            style={{
+              backgroundColor: hover ? '#1a4b4b' : '#183d3d',
+              borderColor: '#183d3d',
+            }}
+            onMouseEnter={() => setHover(true)}
+            onMouseLeave={() => setHover(false)}
+            onClick={handleModalShow}
+          >
+            Add Course
+          </Button>
+        </div>
+
         <div>
           {courses.length === 0 ? (
             <div className="text-center">
               <div className="flex flex-col items-center mb-4">
                 <FaPlus className="text-6xl text-gray-400 mb-2" />
                 <p className="text-gray-600 mb-4">It looks like you haven't created any courses. Start creating your first course to share your knowledge!</p>
-                <Button variant="primary" onClick={handleModalShow}>
-                  Add Your First Course
-                </Button>
               </div>
             </div>
           ) : (
@@ -90,9 +104,7 @@ const InstructorDashboard = ({ user }) => {
                 <div key={course.id} className="bg-white p-4 rounded shadow">
                   <img src={course.image_url || "https://via.placeholder.com/150"} alt={course.title} className="w-full h-40 object-cover rounded mb-2" />
                   <h4 className="text-lg font-semibold">{course.title}</h4>
-                  <p className="text-gray-700">
-                    {course.user ? `${course.user.first_name} ${course.user.last_name}` : 'Instructor info not available'}
-                  </p>
+                  <p className="text-gray-700">{course.description}</p>
                 </div>
               ))}
             </div>
@@ -148,7 +160,16 @@ const InstructorDashboard = ({ user }) => {
                   onChange={handleImageChange}
                 />
               </Form.Group>
-              <Button variant="primary" type="submit" className="mt-3">
+              <Button
+                style={{
+                  backgroundColor: hover ? '#1a4b4b' : '#183d3d',
+                  borderColor: '#183d3d',
+                }}
+                className="mt-3"
+                type="submit"
+                onMouseEnter={() => setHover(true)}
+                onMouseLeave={() => setHover(false)}
+              >
                 Add Course
               </Button>
             </Form>
