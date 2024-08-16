@@ -78,14 +78,6 @@ const Sidebar = () => {
                         {isOpen && <span className="sidebar-menu-item-text">Browse</span>}
                     </Link>
                 </li>
-                {isLoggedIn && (
-                    <li className="sidebar-menu-item">
-                        <Link to="/users" className="sidebar-menu-item-link">
-                            <FaUsers className="sidebar-menu-item-icon" />
-                            {isOpen && <span className="sidebar-menu-item-text">Users</span>}
-                        </Link>
-                    </li>
-                )}
             </ul>
             {isLoggedIn && (
                 <div className="profile-section">
