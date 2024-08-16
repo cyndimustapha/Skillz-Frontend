@@ -1,77 +1,130 @@
-/* eslint-disable no-unused-vars */
-
-import React, { useState } from 'react';
+// Sidebar.js
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { FaBars, FaHome, FaEnvelope, FaBell, FaSearch, FaCog, FaSignOutAlt, FaTachometerAlt } from 'react-icons/fa';
+import { FaBars, FaHome, FaEnvelope, FaBell, FaSearch, FaCog, FaSignOutAlt, FaTachometerAlt, FaUsers } from 'react-icons/fa';
+import BASE_URL from '../pages/UTILS';
+import './sidebar.css'; 
 
 const Sidebar = () => {
     const [isOpen, setIsOpen] = useState(true);
+    const [profile, setProfile] = useState({ name: '', profilePicture: '' });
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+    useEffect(() => {
+        const fetchProfile = async () => {
+            try {
+                const token = localStorage.getItem('token');
+                if (token) {
+                    setIsLoggedIn(true);
+                    const response = await fetch(`${BASE_URL}/users`, {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    });
+                    const data = await response.json();
+                    setProfile({
+                        name: data.name || 'Profile',
+                        profilePicture: data.profile_picture || 'default_profile_picture_url'
+                    });
+                } else {
+                    setIsLoggedIn(false);
+                }
+            } catch (error) {
+                console.error("Error fetching profile:", error);
+                setIsLoggedIn(false);
+            }
+        };
+
+        fetchProfile();
+    }, []);
 
     const toggleSidebar = () => {
         setIsOpen(!isOpen);
     };
 
     return (
-        <div className={`fixed top-0 left-0 h-screen transition-all duration-300 ${isOpen ? 'w-64' : 'w-20'} bg-[#040d12] text-white flex flex-col justify-between`}>
-            <div className="p-4 flex justify-between items-center">
-                {isOpen && <h1 className="text-lg font-bold">Skillz</h1>}
-                <FaBars onClick={toggleSidebar} className="cursor-pointer" />
+        <div className={`sidebar ${isOpen ? 'open' : 'closed'}`}>
+            <div className="sidebar-header">
+                <div className="sidebar-header-content">
+                    {isOpen && <h1 className="sidebar-title">Skillz</h1>}
+                    <button onClick={toggleSidebar} className="sidebar-button">
+                        <FaBars />
+                    </button>
+                </div>
             </div>
-            <ul className="flex-1 list-none p-0 m-0">
-                <li className="p-4 flex items-center hover:bg-[#183d3d] rounded-md">
-                    <Link to="/" className="flex items-center text-white text-base no-underline">
-                        <FaHome className="text-2xl" />
-                        {isOpen && <span className="ml-2">Home</span>}
+            <ul className="sidebar-menu">
+                <li className="sidebar-menu-item">
+                    <Link to="/" className="sidebar-menu-item-link">
+                        <FaHome className="sidebar-menu-item-icon" />
+                        {isOpen && <span className="sidebar-menu-item-text">Home</span>}
                     </Link>
                 </li>
-                <li className="p-4 flex items-center hover:bg-[#183d3d] rounded-md">
-                    <Link to="/Dashboard" className="flex items-center text-white text-base no-underline">
-                        <FaTachometerAlt className="text-2xl" />
-                        {isOpen && <span className="ml-2">Dashboard</span>}
+                <li className="sidebar-menu-item">
+                    <Link to="/Dashboard" className="sidebar-menu-item-link">
+                        <FaTachometerAlt className="sidebar-menu-item-icon" />
+                        {isOpen && <span className="sidebar-menu-item-text">Dashboard</span>}
                     </Link>
                 </li>
-                <li className="p-4 flex items-center hover:bg-[#183d3d] rounded-md">
-                    <Link to="/messages" className="flex items-center text-white text-base no-underline">
-                        <FaEnvelope className="text-2xl" />
-                        {isOpen && <span className="ml-2">Chats</span>}
+                <li className="sidebar-menu-item">
+                    <Link to="/messages" className="sidebar-menu-item-link">
+                        <FaEnvelope className="sidebar-menu-item-icon" />
+                        {isOpen && <span className="sidebar-menu-item-text">Chats</span>}
                     </Link>
                 </li>
-                <li className="p-4 flex items-center hover:bg-[#183d3d] rounded-md">
-                    <Link to="/Notifications" className="flex items-center text-white text-base no-underline">
-                        <FaBell className="text-2xl" />
-                        {isOpen && <span className="ml-2">Notifications</span>}
+                <li className="sidebar-menu-item">
+                    <Link to="/Notifications" className="sidebar-menu-item-link">
+                        <FaBell className="sidebar-menu-item-icon" />
+                        {isOpen && <span className="sidebar-menu-item-text">Notifications</span>}
                     </Link>
                 </li>
-                <li className="p-4 flex items-center hover:bg-[#183d3d] rounded-md">
-                    <Link to="/Browser" className="flex items-center text-white text-base no-underline">
-                        <FaSearch className="text-2xl" />
-                        {isOpen && <span className="ml-2">Browse</span>}
+                <li className="sidebar-menu-item">
+                    <Link to="/Browser" className="sidebar-menu-item-link">
+                        <FaSearch className="sidebar-menu-item-icon" />
+                        {isOpen && <span className="sidebar-menu-item-text">Browse</span>}
                     </Link>
                 </li>
-            </ul>
-            <div className="p-4">
-                <ul className="list-none p-0 m-0">
-                    <li className="p-4 flex items-center hover:bg-[#183d3d] rounded-md">
-                        <Link to="/Settings" className="flex items-center text-white text-base no-underline">
-                            <FaCog className="text-2xl" />
-                            {isOpen && <span className="ml-2">Settings</span>}
+                {isLoggedIn && (
+                    <li className="sidebar-menu-item">
+                        <Link to="/users" className="sidebar-menu-item-link">
+                            <FaUsers className="sidebar-menu-item-icon" />
+                            {isOpen && <span className="sidebar-menu-item-text">Users</span>}
                         </Link>
                     </li>
-                    <li className="p-4 flex items-center hover:bg-[#183d3d] rounded-md">
-                        <button
-                            className="flex items-center text-white text-base no-underline bg-transparent border-none cursor-pointer"
-                            onClick={() => {
-                                localStorage.removeItem('token');
-                                localStorage.removeItem('user');
-                                window.location.href = '/signin';
-                            }}
-                        >
-                            <FaSignOutAlt className="text-2xl" />
-                            {isOpen && <span className="ml-2">Logout</span>}
-                        </button>
-                    </li>
-                </ul>
-            </div>
+                )}
+            </ul>
+            {isLoggedIn && (
+                <div className="profile-section">
+                    <Link to="/profile" className="profile-link">
+                        <img
+                            src={profile.profilePicture}
+                            alt="Profile"
+                            className={`profile-img ${isOpen ? 'open' : 'closed'}`}
+                        />
+                        {isOpen && <span className="profile-name">{profile.name}</span>}
+                    </Link>
+                    <ul className="list-none p-0 m-0 mt-4">
+                        <li className="sidebar-menu-item">
+                            <Link to="/Settings" className="sidebar-menu-item-link">
+                                <FaCog className="sidebar-menu-item-icon" />
+                                {isOpen && <span className="sidebar-menu-item-text">Settings</span>}
+                            </Link>
+                        </li>
+                        <li className="sidebar-menu-item">
+                            <button
+                                className="logout-button"
+                                onClick={() => {
+                                    localStorage.removeItem('token');
+                                    localStorage.removeItem('user');
+                                    window.location.href = '/signin';
+                                }}
+                            >
+                                <FaSignOutAlt className="logout-button-icon" />
+                                {isOpen && <span className="logout-button-text">Logout</span>}
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+            )}
         </div>
     );
 };

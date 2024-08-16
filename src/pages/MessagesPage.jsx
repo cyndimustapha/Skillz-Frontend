@@ -1,8 +1,10 @@
-import React, { useEffect, useState, useRef } from "react";
+/* eslint-disable no-unused-vars */
+import { useEffect, useState, useRef } from "react";
 import io from "socket.io-client";
 import { useNavigate } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
 import { useMessages } from "../components/MessagesContext";
+import { Col, Container, Row } from "react-bootstrap";
 
 const socket = io("http://localhost:5173");
 
@@ -130,17 +132,20 @@ const MessagesPage = () => {
   };
 
   // Handle back navigation
-  const handleBackClick = () => {
-    navigate(-1);
-  };
+  //const handleBackClick = () => {
+   // navigate(-1);
+  //};
 
   return (
     <div className="flex h-screen">
       <Sidebar isOpen={isSidebarOpen} toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} />
       <div className={`flex-1 transition-all duration-300 ${isSidebarOpen ? 'ml-64' : 'ml-16'} flex`}>
         {/* Conversations List */}
-        <div className="w-64 bg-gray-100 border-r border-gray-300">
-          <div className="p-4 bg-[#183d3d] text-white">
+        <Container>
+          <Row>
+            <Col xs={3} style={{marginRight:'10px', marginTop:'10px'}}>
+        <div className="w-64 bg-gray-100 border-r border-gray-300" style={{width:'330px', height:'900px', borderBottomRightRadius:'30px', borderBottomLeftRadius:'30px', borderTopLeftRadius:'30px', borderTopRightRadius:'30px', marginRight:'20px'}}>
+          <div className="p-4 bg-[#183d3d] text-white" style={{height:'80px', borderTopLeftRadius:'30px' ,borderTopRightRadius:'30px'}}> 
             Conversations
           </div>
           <div className="p-2 overflow-y-auto h-[calc(100vh-4rem)]">
@@ -155,10 +160,13 @@ const MessagesPage = () => {
             ))}
           </div>
         </div>
+        </Col>
+        <Col xs={6 } style={{marginTop:'10px'}}>
 
         {/* Chat Area */}
-        <div className="flex-1 flex flex-col">
-          <div className="bg-[#183d3d] text-white p-3">
+        
+        <div className="flex-1 flex flex-col " style={{height:'900px', width:'1000px', borderTopLeftRadius:'30px' ,borderTopRightRadius:'30px', borderBottomRightRadius:'30px', borderBottomLeftRadius:'30px',}}>
+          <div className="bg-[#183d3d] text-white p-3" style={{  borderTopLeftRadius:'30px', borderTopRightRadius:'30px'}}>
             {selectedPerson ? (
               `${selectedPerson.first_name} ${selectedPerson.last_name}`
             ) : (
@@ -203,9 +211,16 @@ const MessagesPage = () => {
             </div>
           </div>
         </div>
+        </Col>
+        </Row>
+        </Container>
+       
       </div>
+      
     </div>
+
   );
+  
 };
 
 export default MessagesPage;
