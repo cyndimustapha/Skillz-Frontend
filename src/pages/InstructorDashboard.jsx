@@ -6,6 +6,7 @@ import Sidebar from '../components/Sidebar';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { FaPlus } from 'react-icons/fa'; // Import the plus icon
 import { Modal, Button, Form } from 'react-bootstrap'; // Import Bootstrap components
+import BASE_URL from './UTILS';
 
 const InstructorDashboard = ({ user }) => {
   const [courses, setCourses] = useState([]);
@@ -59,7 +60,7 @@ const InstructorDashboard = ({ user }) => {
     formData.append('instructor_id', user.id);
 
     try {
-      const response = await fetch('http://127.0.0.1:5000/courses', {
+      const response = await fetch(`${BASE_URL}/courses`, {
         method: 'POST',
         body: formData, // Do NOT set Content-Type here
       });
