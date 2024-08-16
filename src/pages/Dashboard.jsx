@@ -3,6 +3,7 @@ import LearnersDashboard from './LearnersDashboard';
 import InstructorDashboard from './InstructorDashboard';
 import Sidebar from '../components/Sidebar';
 import './Dashboard.css'; // Import custom CSS
+import BASE_URL from './UTILS';
 
 const Dashboard = () => {
   const [userRole, setUserRole] = useState(null);
@@ -15,7 +16,7 @@ const Dashboard = () => {
       return;
     }
 
-    fetch('http://127.0.0.1:5000/users', {
+    fetch(`${BASE_URL}/users`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
