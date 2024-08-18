@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Container, Row, Col, Card, Button } from 'react-bootstrap';
 import { useParams, useNavigate } from 'react-router-dom';
+import ReactPlayer from 'react-player';
 import BASE_URL from './UTILS';
 
 const CourseContent = () => {
@@ -56,14 +57,13 @@ const CourseContent = () => {
                 <Col md={8}>
                     <Card>
                         {contents[0]?.content_type === 'video' && (
-                            <video
-                                width="100%"
+                            <ReactPlayer
+                                url={contents[0].content_url}
                                 controls
+                                width="100%"
+                                height="auto"
                                 style={{ borderRadius: '10px 10px 0 0' }}
-                            >
-                                <source src={contents[0].content_url} type="video/mp4" />
-                                Your browser does not support the video tag.
-                            </video>
+                            />
                         )}
                         {contents[0]?.content_type === 'text' && (
                             <Card.Body>
@@ -93,10 +93,12 @@ const CourseContent = () => {
                         <Card key={index} className="mb-3">
                             {content.content_type === 'video' && (
                                 <Card.Body>
-                                    <video width="100%" controls>
-                                        <source src={content.content_url} type="video/mp4" />
-                                        Your browser does not support the video tag.
-                                    </video>
+                                    <ReactPlayer
+                                        url={content.content_url}
+                                        controls
+                                        width="100%"
+                                        height="auto"
+                                    />
                                 </Card.Body>
                             )}
                             {content.content_type === 'text' && (
