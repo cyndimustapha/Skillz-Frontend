@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import backgroundImage from './p5su.jpeg';
+import BASE_URL from '../pages/UTILS';
 
 const SignUpForm = () => {
   const [formData, setFormData] = useState({
@@ -49,7 +50,7 @@ const SignUpForm = () => {
     formDataToSend.append('verified', false);
 
     try {
-      const response = await fetch('http://127.0.0.1:5000/sign-up', {
+      const response = await fetch(`${BASE_URL}/sign-up`, {
         method: 'POST',
         body: formDataToSend,
       });

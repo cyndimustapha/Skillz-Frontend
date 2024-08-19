@@ -1,5 +1,6 @@
 /* eslint-disable react/prop-types */
 import { useState } from 'react';
+import BASE_URL from '../pages/UTILS';
 
 const TwoFactorAuth = ({ email, onClose, onSuccess }) => {
   const [otp, setOtp] = useState('');
@@ -8,7 +9,7 @@ const TwoFactorAuth = ({ email, onClose, onSuccess }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('http://127.0.0.1:5000/verify-2fa', {
+      const response = await fetch(`${BASE_URL}/verify-2fa`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
