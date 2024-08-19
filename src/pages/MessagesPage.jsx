@@ -7,7 +7,7 @@ import { useMessages } from "../components/MessagesContext";
 import { Col, Container, Row } from "react-bootstrap";
 import BASE_URL from "./UTILS";
 
-const socket = io("https://skillz-frontend-20-cyndimustaphas-projects.vercel.app");
+const socket = io("https://skillz-frontend.vercel.app/");
 
 const MessagesPage = () => {
   const { messages, setMessages, people, setPeople, selectedPerson, setSelectedPerson } = useMessages();
