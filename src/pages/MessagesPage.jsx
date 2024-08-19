@@ -21,7 +21,7 @@ const MessagesPage = () => {
 
   // Fetch conversations and set up socket listeners
   useEffect(() => {
-    fetch('http://127.0.0.1:5000/users/conversations', {
+    fetch(`${BASE_URL}/users/conversations`, {
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('token')}`,
       }
@@ -114,7 +114,7 @@ const MessagesPage = () => {
       setMessage('');
 
       // Persist the message to the database
-      fetch('http://127.0.0.1:5000/messages', {
+      fetch(`${BASE_URL}/messages`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

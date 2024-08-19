@@ -1,37 +1,79 @@
-import React, { useEffect, useState } from 'react';
-import { Container, Row, Col, Card, Button, Nav, Navbar, NavDropdown, ListGroup, NavLink } from 'react-bootstrap';
-import SearchBar from './searchbar';
-import Sidebar from '../components/Sidebar';
-import { Link } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import {
+  Container,
+  Row,
+  Col,
+  Card,
+  Nav,
+  Navbar,
+  NavDropdown,
+  ListGroup,
+  Button,
+} from "react-bootstrap";
+import SearchBar from "./searchbar";
+import Sidebar from "../components/Sidebar";
+import { Link } from "react-router-dom";
+import BASE_URL from './UTILS';
 
 const Browser = () => {
   const [courses, setCourses] = useState([]);
   const [filteredCourses, setFilteredCourses] = useState([]);
   const [categories, setCategories] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState("");
   const [sidebarOpen, setSidebarOpen] = useState(false); // Sidebar state
+  const [learnerId, setLearnerId] = useState(null);
 
   useEffect(() => {
-    fetch('http://localhost:5000/courses')
+    const token = localStorage.getItem('token');
+    if (!token) {
+      console.error('No token found');
+      return;
+    }
+
+    fetch(`${BASE_URL}/users`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      }
+    })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.json();
+    })
+    .then((data) => {
+      setLearnerId(data.id);
+    })
+    .catch((error) => {
+      console.error('Error fetching user data:', error);
+    });
+
+    // Fetch courses
+    fetch(`${BASE_URL}/courses`)
       .then((response) => response.json())
       .then((data) => {
         setCourses(data);
 
         // Extract unique categories from the courses data
-        const uniqueCategories = [...new Set(data.map((course) => course.category))];
+        const uniqueCategories = [
+          ...new Set(data.map((course) => course.category)),
+        ];
         setCategories(uniqueCategories);
 
         // Initially, show all courses
         setFilteredCourses(data);
       })
       .catch((error) => {
-        console.error('Error fetching courses:', error);
+        console.error("Error fetching courses:", error);
       });
   }, []);
 
+
   const handleCategorySelect = (category) => {
     setSelectedCategory(category);
-    if (category === 'All Categories') {
+    if (category === "All Categories") {
       setFilteredCourses(courses);
     } else {
       const filtered = courses.filter((course) => course.category === category);
@@ -51,18 +93,42 @@ const Browser = () => {
   };
 
   return (
-    <Container fluid style={{ backgroundColor: '#f8f9fa', padding: '20px', paddingBottom: '700px' }}>
-      <Row style={{ borderBottom: '1px solid black', marginBottom: '40px' }}>
+    <Container
+      fluid
+      style={{
+        backgroundColor: "#f8f9fa",
+        padding: "20px",
+        paddingBottom: "700px",
+      }}
+    >
+      <Row style={{ borderBottom: "1px solid black", marginBottom: "40px" }}>
         <Col>
-          <Navbar bg="light" expand="lg" style={{ marginLeft: sidebarOpen ? '250px' : '0', transition: 'margin-left 0.3s' }}>
-            <Navbar.Brand href="#" onClick={toggleSidebar} style={{ cursor: 'pointer' }}>
+          <Navbar
+            bg="light"
+            expand="lg"
+            style={{
+              marginLeft: sidebarOpen ? "250px" : "0",
+              transition: "margin-left 0.3s",
+            }}
+          >
+            <Navbar.Brand
+              href="#"
+              onClick={toggleSidebar}
+              style={{ cursor: "pointer" }}
+            >
               ☰ SKILLZ
             </Navbar.Brand>
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
             <Navbar.Collapse id="basic-navbar-nav">
               <Nav className="me-auto">
-                <NavDropdown title="Categories" id="basic-nav-dropdown" onSelect={handleCategorySelect}>
-                  <NavDropdown.Item eventKey="All Categories">All Categories</NavDropdown.Item>
+                <NavDropdown
+                  title="Categories"
+                  id="basic-nav-dropdown"
+                  onSelect={handleCategorySelect}
+                >
+                  <NavDropdown.Item eventKey="All Categories">
+                    All Categories
+                  </NavDropdown.Item>
                   {categories.map((category, index) => (
                     <NavDropdown.Item key={index} eventKey={category}>
                       {category}
@@ -81,7 +147,15 @@ const Browser = () => {
       </Row>
 
       <Row>
-        <Col md={sidebarOpen ? 3 : 0} style={{ backgroundColor: '#ffffff', padding: '10px', transition: 'width 0.3s', overflow: 'hidden' }}>
+        <Col
+          md={sidebarOpen ? 3 : 0}
+          style={{
+            backgroundColor: "#ffffff",
+            padding: "10px",
+            transition: "width 0.3s",
+            overflow: "hidden",
+          }}
+        >
           {sidebarOpen && (
             <ListGroup variant="flush">
               <Sidebar />
@@ -89,12 +163,12 @@ const Browser = () => {
           )}
         </Col>
 
-        <Col md={sidebarOpen ? 9 : 12} style={{ transition: 'width 0.2s' }}>
+        <Col md={sidebarOpen ? 9 : 12} style={{ transition: "width 0.2s" }}>
           <Row>
             {filteredCourses.map((course, index) => (
               <Col md={4} key={index} className="mb-4">
-                <Card style={{ borderRadius: '5px' }}>
-                  <Card.Img
+                <Card style={{ borderRadius: "5px" }}>
+                <Card.Img
                     variant="top"
                     src={course.image_url || 'https://via.placeholder.com/300x200.png?text=No+Image'}
                     style={{ height: '200px', objectFit: 'cover' }}
@@ -110,10 +184,9 @@ const Browser = () => {
                       />
                       <span>{`${course.instructor?.first_name} ${course.instructor?.last_name}`}</span>
                     </div>
-                    <Link to={'/payment'}>
+                    <Link to={`/payment/${course.id}/${learnerId}`}>
                     <Button variant="light" style={{ marginTop: '10px' }}>Enroll</Button>
                     </Link>
-                   
                   </Card.Body>
                 </Card>
               </Col>

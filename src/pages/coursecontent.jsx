@@ -18,27 +18,15 @@ const CourseContent = () => {
             .then(data => setCourse(data))
             .catch(error => console.error('Error fetching course data:', error));
 
-        // Fetch course contents
-        fetch(`${BASE_URL}/courses/${courseId}`)
+        // Fetch all contents associated with the course
+        fetch(`${BASE_URL}/coursecontents?course_id=${courseId}`)
             .then(response => response.json())
-            .then(courseData => {
-                const contentPromises = courseData.contents.map(content =>
-                    fetch(`${BASE_URL}/coursecontents/${content.id}`)
-                        .then(response => response.json())
-                );
-
-                Promise.all(contentPromises)
-                    .then(contentData => {
-                        setContents(contentData);
-                        setLoading(false);
-                    })
-                    .catch(error => {
-                        console.error('Error fetching course contents:', error);
-                        setLoading(false);
-                    });
+            .then(data => {
+                setContents(data);
+                setLoading(false);
             })
             .catch(error => {
-                console.error('Error fetching course data:', error);
+                console.error('Error fetching course contents:', error);
                 setLoading(false);
             });
     }, [courseId]);
@@ -67,7 +55,9 @@ const CourseContent = () => {
                         )}
                         {contents[0]?.content_type === 'text' && (
                             <Card.Body>
-                                <Card.Text>{contents[0].content_url}</Card.Text>
+                                <Card.Text as="div">
+                                    {contents[0].content_url}
+                                </Card.Text>
                             </Card.Body>
                         )}
                         <Card.Body>
@@ -75,15 +65,15 @@ const CourseContent = () => {
                             <Button
                                 variant="success"
                                 className="mb-3"
-                                onClick={() => navigate(`/instructor/${course.instructor_id}`)}
+                                onClick={() => navigate(`/profile/${course.instructor_id}`)}
                             >
                                 View Instructor
                             </Button>
-                            <Card.Text>
+                            <Card.Text as="div">
                                 <strong>About</strong>
-                                <p style={{ marginTop: '10px' }}>
+                                <div style={{ marginTop: '10px' }}>
                                     {course.description}
-                                </p>
+                                </div>
                             </Card.Text>
                         </Card.Body>
                     </Card>
@@ -103,12 +93,12 @@ const CourseContent = () => {
                             )}
                             {content.content_type === 'text' && (
                                 <Card.Body>
-                                    <Card.Text>{content.content_url}</Card.Text>
+                                    <Card.Text as="div">{content.content_url}</Card.Text>
                                 </Card.Body>
                             )}
                             <Card.Body>
                                 <Card.Title>{content.content_type}</Card.Title>
-                                <Card.Text>Part {index + 2}</Card.Text>
+                                <Card.Text as="div">Part {index + 2}</Card.Text>
                             </Card.Body>
                         </Card>
                     ))}

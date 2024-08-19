@@ -1,6 +1,8 @@
+import { useParams, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import MpesaPaymentForm from "../components/MpesaPaymentForm";
 import CreditCardPaymentForm from "../components/CreditCardPaymentForm";
+import BASE_URL from "./UTILS";
 
 const paymentMethods = [
   {
@@ -14,19 +16,21 @@ const paymentMethods = [
 ];
 
 const PaymentPage = () => {
+  const { courseId, learnerId } = useParams(); // Access the parameters from the URL
+  
   const [paymentMethod, setPaymentMethod] = useState(null);
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
-  // Submit phone for STK push
   const handlePhoneSubmit = async (phoneNumber) => {
     try {
       setLoading(true);
-      const response = await fetch("http://localhost:5000/sendSTKPush", {
+      const response = await fetch(`${BASE_URL}/sendSTKPush`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ phone: phoneNumber, amount: 10 }), // Example with a fixed amount of 1000
+        body: JSON.stringify({ phone: phoneNumber, amount: 10 }), // Example amount
       });
 
       if (!response.ok) {
@@ -35,6 +39,8 @@ const PaymentPage = () => {
 
       const data = await response.json();
       console.log("STK Push Response: ", data);
+
+      await enrollUserInCourse();
     } catch (error) {
       console.log("Error: ", error);
     } finally {
@@ -42,7 +48,36 @@ const PaymentPage = () => {
     }
   };
 
-  // Submit card details
+  const enrollUserInCourse = async () => {
+    try {
+      console.log("Enrolling user with courseId:", courseId, "and learnerId:", learnerId);
+
+      const response = await fetch(`${BASE_URL}/enrollments`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          course_id: courseId,
+          learner_id: learnerId,
+          status: "enrolled",
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log("Enrollment Response: ", data);
+
+       // Redirect to the dashboard after successful enrollment
+      navigate("/dashboard");
+    } catch (error) {
+      console.log("Error: ", error);
+    }
+  };
+
   const handleCardSubmit = () => {
     console.log("Submitting card details");
   };

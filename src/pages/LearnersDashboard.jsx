@@ -3,6 +3,7 @@ import { FaPlus } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate for navigation
 import Sidebar from '../components/Sidebar';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import BASE_URL from './UTILS';
 
 const LearnersDashboard = ({ user }) => {
   const [courses, setCourses] = useState([]);
@@ -11,8 +12,17 @@ const LearnersDashboard = ({ user }) => {
 
   useEffect(() => {
     console.log('Fetching enrollments for learner...');
-    fetch(`http://127.0.0.1:5000/enrollments?learner_id=${user.id}`)
-      .then((response) => response.json())
+    fetch(`${BASE_URL}/enrollments?learner_id=${user.id}`)
+      .then((response) => {
+        if (response.ok) {
+          // Check if response is JSON
+          return response.json();
+        } else {
+          return response.text().then(text => {
+            throw new Error(`Unexpected response format: ${text}`);
+          });
+        }
+      })
       .then((data) => {
         console.log('Fetched enrollments data:', data);
         setEnrollments(data);
@@ -21,8 +31,17 @@ const LearnersDashboard = ({ user }) => {
         const courseIds = data.map(enrollment => enrollment.course_id);
         if (courseIds.length > 0) {
           Promise.all(courseIds.map(courseId =>
-            fetch(`http://127.0.0.1:5000/courses/${courseId}`)
-              .then(response => response.json())
+            fetch(`${BASE_URL}/courses/${courseId}`)
+              .then(response => {
+                if (response.ok) {
+                  // Check if response is JSON
+                  return response.json();
+                } else {
+                  return response.text().then(text => {
+                    throw new Error(`Unexpected response format: ${text}`);
+                  });
+                }
+              })
           ))
           .then(coursesData => {
             console.log('Fetched courses data:', coursesData);
@@ -80,7 +99,7 @@ const LearnersDashboard = ({ user }) => {
                     className="w-full h-40 object-cover rounded mb-2"
                   />
                   <h4 className="text-lg font-semibold">{course.title}</h4>
-                  <p className="text-gray-700">{course.user.first_name} {course.user.last_name}</p>
+                  <p className="text-gray-700">{course.description}</p>
                 </div>
               ))}
             </div>
