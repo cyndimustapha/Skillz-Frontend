@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import backgroundImage from './p5si.webp';
-import TwoFactorAuth from './TwoFactorAuth'; // Import the modal component
-import BASE_URL from '../pages/UTILS';
+import TwoFactorAuth from './TwoFactorAuth';
+import { BASE_URL } from '../pages/UTILS'; // ✅ Correct import
 
 const SignInForm = () => {
   const [formData, setFormData] = useState({
@@ -23,39 +24,42 @@ const SignInForm = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
+    setFormData((prev) => ({
+      ...prev,
       [name]: value
-    });
+    }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      const response = await fetch(`${BASE_URL}/sign-in`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
+      const response = await axios.post(`${BASE_URL}/auth/login`, formData, {
+        headers: { 'Content-Type': 'application/json' }
       });
 
-      const data = await response.json();
-      console.log(data)
-      if (response.ok) {
-        setMessages({ successMessage: 'Sign In successful', errorMessage: '' });
+      const data = response.data;
+      console.log('Login response:', data);
 
+      if (response.status === 200) {
+        // ✅ Save token to localStorage
+        localStorage.setItem('token', data.token);
 
+        // ✅ Optionally save user info if available
+        if (data.user) {
+          localStorage.setItem('user', JSON.stringify(data.user));
+        }
 
+        setMessages({ successMessage: 'Sign in successful!', errorMessage: '' });
+
+        // ✅ Trigger 2FA modal if required
         setEmailFor2FA(formData.email);
-        setIsModalOpen(true); // Open the modal for 2FA
-
-      } else {
-        setMessages({ successMessage: '', errorMessage: data.message });
+        setIsModalOpen(true);
       }
     } catch (error) {
-      setMessages({ successMessage: '', errorMessage: 'An error occurred. Please try again.' });
+      const errorMsg =
+        error.response?.data?.message || 'Login failed. Please try again.';
+      setMessages({ successMessage: '', errorMessage: errorMsg });
     }
   };
 
@@ -86,8 +90,14 @@ const SignInForm = () => {
       <div style={formSideStyle}>
         <div style={{ width: '70%', padding: '0 20px' }}>
           <h3 className="text-center mb-4 text-black">Sign In</h3>
-          {messages.successMessage && <div className="alert alert-success">{messages.successMessage}</div>}
-          {messages.errorMessage && <div className="alert alert-danger">{messages.errorMessage}</div>}
+
+          {messages.successMessage && (
+            <div className="alert alert-success">{messages.successMessage}</div>
+          )}
+          {messages.errorMessage && (
+            <div className="alert alert-danger">{messages.errorMessage}</div>
+          )}
+
           <form onSubmit={handleSubmit}>
             <div className="mb-3">
               <input
@@ -111,13 +121,20 @@ const SignInForm = () => {
                 required
               />
             </div>
-            <button type="submit" className="btn btn-dark w-100">Sign In</button>
+            <button type="submit" className="btn btn-dark w-100">
+              Sign In
+            </button>
           </form>
+
           <p className="text-center mt-3 text-white">
-            Do not have an account? <Link to="/signup" className="text-black">Sign up here</Link>
+            Don’t have an account?{' '}
+            <Link to="/signup" className="text-black">
+              Sign up here
+            </Link>
           </p>
         </div>
       </div>
+
       {isModalOpen && (
         <TwoFactorAuth
           email={emailFor2FA}
